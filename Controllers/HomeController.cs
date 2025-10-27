@@ -18,10 +18,21 @@ namespace ASP_PV411.Controllers
             return View();
         }
 
+        public IActionResult Intro()
+        {
+            return View();
+        }
+        
+        public IActionResult Razor()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
         }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
