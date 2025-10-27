@@ -27,6 +27,11 @@ namespace ASP_PV411.Controllers
         {
             return View();
         }
+        
+        public IActionResult History()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {
