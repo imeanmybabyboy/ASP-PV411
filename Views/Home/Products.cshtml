@@ -1,0 +1,45 @@
+﻿@model ASP_PV411.Models.Home.HomeProductsViewModel;
+
+@{
+    ViewData["Title"] = "Products";
+}
+<div class="text-center">
+    <h1 class="display-4">Our products</h1>
+</div>
+
+<h2>
+    Here you can choose products to order!
+</h2>
+<p>
+    Here are some examples:
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <th scope="row">
+                        @i
+                    </th>
+                    <td>
+                        @product.Name
+                    </td>
+                    <td>
+                        ₴@product.Price
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>

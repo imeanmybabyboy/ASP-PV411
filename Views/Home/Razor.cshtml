@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ASP_PV411.Models.Home.HomeProductsViewModel;
+
+@{
     ViewData["Title"] = "Razor";
 }
 
@@ -11,4 +13,110 @@
 <p>
     The main task that is solved during server activity is strings and data interpolatin, forming HTML as String (string variable)
     with additional tasks of importing data, virtual and cyclic layout
+</p>
+
+<h2>
+    Syntax basics
+</h2>
+<p>
+    The main character that creates norm for Razor is <code>&commat;</code>.
+    You should use <code>&amp;commat;</code> entity in the code.
+</p>
+<p>
+    Expressions in the programming are the instructions that have a result.
+    In the Razor context we are talking about the inserting results into markup. Inserting is done in the place
+    that is commanded to be placed in. The expression is created using construction <code>&commat;(expression):</code>
+    for example: <code>&commat;(2 + 3) + 4 = @(2 + 3) + 4</code>
+    <br />
+    All programm language means are available in the expressions, including objects' methods:
+    <br />
+    <code>&commat;((2 + 1.0 / 3 + Math.Sqrt(3)).ToString("F4")) = @((2 + 1.0 / 3 + Math.Sqrt(3)).ToString("F4"))</code>
+</p>
+
+<h2>
+    Statements
+</h2>
+<p>
+    Statements are created using <code>&commat;{statements}</code>
+    <br />
+    <code>
+        &commat; { <br />
+        &emsp; int x = 10; <br />
+        &emsp; string str = "Hello"; <br />
+        }
+    </code>
+
+</p>
+@{
+    int x = 10;
+    string str = "hello";
+}
+
+<h2>
+    Скорочені вирази та змінні
+</h2>
+<p>
+    При виведеннні змінних можна вживати скорочений синтаксис
+    <code>&commat;змінна</code> без круглих дужок. Повний синтаксис також припустимий
+    <br />
+    <code>
+        &commat;x = @x, &commat;(str) = @(str)
+    </code>
+    <br />
+    Зі скороченим синтаксисом потрібно бути обережним - інтерполяція діє тільки на саму змінну і на деякі операції, на кшталт індексування чи виклику метода.
+    Але на більшість інших операцій не поширюється. <br />
+    <code>&commat;x.ToString("F2") = @x.ToString("F2")</code><br />
+    <code>&commat;x + 2 = @x + 2</code><br />
+    <code>&commat;(x + 2) = @(x + 2)</code><br />
+    <code>&commat;str + " world" = @str + " world"</code><br />
+    <code>&commat;(str + " world") = @(str + " world")</code><br />
+</p>
+
+<h2>
+    Умовна верстка
+</h2>
+<p>
+    Для ряду операторів існує скорочена форма інструкцій, зокрема для умовного оператора - <code>&commat;if</code>. Припускаються як скорочена форма оператора: <br />
+    <code>
+        &commat;if (str.Length < 10)<br />
+        { <br />
+        &emsp; &lti> Довжина str менша за 10 &lt/i> <br />
+        } <br />
+    </code>
+    @if (str.Length < 10)
+    {
+        <i>Довжина str менша за 10 </i>
+    }
+    <br />
+    так і повна форма: <br />
+    <code>
+        &commat;if (str.Length < 3)<br />
+        { <br />
+        &emsp; &lt;i> Довжина str менша за 3 &lt;/i> <br />
+        } <br />
+        else <br />
+        {<br />
+        &lt;u>Довжина str не менша за 3&lt;/u><br />
+        }<br />
+    </code>
+    @if (str.Length < 3)
+    {
+        <i>Довжина str менша за 3 </i>
+    }
+    else
+    {
+        <u>Довжина str не менша за 3</u>
+    }
+</p>
+<h2>
+    Цикли
+</h2>
+<p>
+    Razor підтримує усі види циклів C# у скороченій формі:
+    <code>
+        &commat;for, &commat;while, &commat;foreach...
+    </code>
+    Частіше за все використовується цилк-ітератор для опрацювань даних-масивів або колекцій;
+    Передача даних від контролерів до представлень (Views) може здійснюватись через спеціальні транспортні об'єкти
+    <code> ViewBag </code> та <code> ViewData </code>
 </p>
