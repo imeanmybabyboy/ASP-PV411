@@ -1,7 +1,16 @@
+﻿using ASP_PV411.Services.Random;
+using ASP_PV411.Services.Timestamp;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+// Реєстрація сервісів
+// Зазвичай, реєструються не об'єкти, а класи (типи), об'єкти створюються автомаитчно при першому запиті на інжекцію (ледаче створення)
+builder.Services.AddRandom();
+builder.Services.AddTimestamp();
 
 var app = builder.Build();
 
