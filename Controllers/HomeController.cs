@@ -28,11 +28,23 @@ namespace ASP_PV411.Controllers
         
         public IActionResult IoC()
         {
+
             ViewData["rnd"] = _randomService.RandomInt();
             ViewData["ref"] = _randomService.GetHashCode();
-            ViewData["ctrl"] = _timestampService.Timestamp();
+            ViewData["ctrl"] = this.GetHashCode();
 
             return View();
+        }
+
+        public IActionResult IoCHomework()
+        {
+            HomeIocViewModel iocViewModel = new()
+            {
+                TimestampServiceControllerHashCode = _timestampService.GetHashCode(),
+                ServiceType = "Singleton"
+            };
+
+            return View(iocViewModel);
         }
 
         public IActionResult Intro()

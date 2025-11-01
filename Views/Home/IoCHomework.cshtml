@@ -1,0 +1,36 @@
+﻿@model ASP_PV411.Models.Home.HomeIocViewModel;
+@inject ASP_PV411.Services.Timestamp.ITimestampService timestamp;
+@{
+    Model.TimestampServiceRazorHashCode = timestamp.GetHashCode();
+}
+
+@{
+    ViewData["Title"] = "IoC Homework";
+}
+<div class="text-center">
+    <h1 class="display-4">01.11 - IoC Homework</h1>
+</div>
+<h2>
+    Хеш-коди сервісу Timestamp:
+</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Service</th>
+            <th>Hash code</th>
+            <th>Service type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Service controller</td>
+            <td>@Model.TimestampServiceControllerHashCode</td>
+            <td>@Model.ServiceType</td>
+        </tr>
+        <tr>
+            <td>Service Razor</td>
+            <td>@Model.TimestampServiceRazorHashCode</td>
+            <td>@Model.ServiceType</td>
+        </tr>
+    </tbody>
+</table>
