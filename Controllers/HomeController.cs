@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using ASP_PV411.Models;
 using ASP_PV411.Models.Home;
+using ASP_PV411.Services.Hash;
 using ASP_PV411.Services.Random;
 using ASP_PV411.Services.Timestamp;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +13,14 @@ namespace ASP_PV411.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IRandomService _randomService;
         private readonly ITimestampService _timestampService;
+        private readonly IHashService _hashService;
 
-
-        public HomeController(ILogger<HomeController> logger, IRandomService randomService, ITimestampService timestampService)
+        public HomeController(ILogger<HomeController> logger, IRandomService randomService, ITimestampService timestampService, IHashService hashService)
         {
             _logger = logger;
             _randomService = randomService;
             _timestampService = timestampService;
+            _hashService = hashService;
         }
 
         public IActionResult Index()
@@ -32,6 +34,7 @@ namespace ASP_PV411.Controllers
             ViewData["rnd"] = _randomService.RandomInt();
             ViewData["ref"] = _randomService.GetHashCode();
             ViewData["ctrl"] = this.GetHashCode();
+            ViewData["hash"] = _hashService.Digest("123");
 
             return View();
         }

@@ -1,4 +1,5 @@
-﻿using ASP_PV411.Services.Random;
+﻿using ASP_PV411.Services.Hash;
+using ASP_PV411.Services.Random;
 using ASP_PV411.Services.Timestamp;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,8 @@ builder.Services.AddControllersWithViews();
 // Зазвичай, реєструються не об'єкти, а класи (типи), об'єкти створюються автомаитчно при першому запиті на інжекцію (ледаче створення)
 builder.Services.AddRandom();
 builder.Services.AddTimestamp();
+builder.Services.AddHash();
+
 
 var app = builder.Build();
 
