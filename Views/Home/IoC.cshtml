@@ -12,6 +12,10 @@ Hash from 123: @ViewData["hash"] <br />
 @ViewData["rnd"] <br />
 @ViewData["ref"] ||| @randomService.GetHashCode() <br />
 @ViewData["ctrl"] <br />
+---------------------------------- <br />
+@ViewData["salt"]<br /> <br />
+@ViewData["dk"]<br /> <br />
+@ViewData["signature"]<br /> <br />
 
 <p>
     <b>Інверсія управління</b> (IoC - Inversion of control) - архітектурний шаблон згідно з яким контроль управління (контроль за) життєвим циклом об'єктів перекладається на єдиний модуль. Технічною мовою, замість інструкцій <code>new</code> для створення об'єктів здійснюється запит до цього модуля.

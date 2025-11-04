@@ -4,7 +4,7 @@
     {
         public static void AddHash(this IServiceCollection services)
         {
-            services.AddSingleton<IHashService, Sha2HashService>();
+            services.AddSingleton<IHashService, Sha1HashService>();
         }
     }
 }
