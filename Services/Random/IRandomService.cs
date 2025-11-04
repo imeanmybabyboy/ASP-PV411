@@ -2,7 +2,7 @@
 {
     public interface IRandomService
     {
-        int RandomInt();
+        int RandomInt(int max);
 
     }
 }

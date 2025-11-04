@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using ASP_PV411.Models;
 using ASP_PV411.Models.Home;
+using ASP_PV411.Services.FolderName;
 using ASP_PV411.Services.Hash;
 using ASP_PV411.Services.Kdf;
+using ASP_PV411.Services.OTP;
 using ASP_PV411.Services.Random;
 using ASP_PV411.Services.Salt;
 using ASP_PV411.Services.Signature;
@@ -20,8 +22,10 @@ namespace ASP_PV411.Controllers
         private readonly ISaltService _saltService;
         private readonly IKdfService _kdfService;
         private readonly ISignatureService _signatureService;
+        private readonly IOtpService _otpService;
+        private readonly IFolderNameService _folderNameService;
 
-        public HomeController(ILogger<HomeController> logger, IRandomService randomService, ITimestampService timestampService, IHashService hashService, ISaltService saltService, IKdfService kdfService, ISignatureService signatureService)
+        public HomeController(ILogger<HomeController> logger, IRandomService randomService, ITimestampService timestampService, IHashService hashService, ISaltService saltService, IKdfService kdfService, ISignatureService signatureService, IOtpService otpService, IFolderNameService folderNameService)
         {
             _logger = logger;
             _randomService = randomService;
@@ -30,6 +34,8 @@ namespace ASP_PV411.Controllers
             _saltService = saltService;
             _kdfService = kdfService;
             _signatureService = signatureService;
+            _otpService = otpService;
+            _folderNameService = folderNameService;
         }
 
         public IActionResult Index()
@@ -37,10 +43,20 @@ namespace ASP_PV411.Controllers
             return View();
         }
         
+        public IActionResult Services()
+        {
+            ViewData["password"] = $"Default length (6): {_otpService.GetOneTimePassword()} | " +
+                $"Custom length (4): {_otpService.GetOneTimePassword(4)}";
+
+            ViewData["randomFolderName"] = _folderNameService.Name();
+
+            return View();
+        }
+        
         public IActionResult IoC()
         {
 
-            ViewData["rnd"] = _randomService.RandomInt();
+            ViewData["rnd"] = _randomService.RandomInt(2000);
             ViewData["ref"] = _randomService.GetHashCode();
             ViewData["ctrl"] = this.GetHashCode();
             ViewData["hash"] = _hashService.Digest("123");

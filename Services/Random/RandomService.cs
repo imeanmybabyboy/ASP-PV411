@@ -4,7 +4,7 @@
     {
         static readonly System.Random _random = new();
 
-        public int RandomInt() => _random.Next();
+        public int RandomInt(int max) => _random.Next(max);
 
     }
 }

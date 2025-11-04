@@ -17,7 +17,7 @@ namespace ASP_PV411.Services.Salt
             char[] chars = new char[length.Value];
             for (int i = 0; i < length; i++)
             {
-                chars[i] = (char)(97 + _randomService.RandomInt() % 26);
+                chars[i] = (char)(97 + _randomService.RandomInt(2000) % 26);
             }
 
             return new string(chars);

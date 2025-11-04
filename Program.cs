@@ -1,5 +1,7 @@
-﻿using ASP_PV411.Services.Hash;
+﻿using ASP_PV411.Services.FolderName;
+using ASP_PV411.Services.Hash;
 using ASP_PV411.Services.Kdf;
+using ASP_PV411.Services.OTP;
 using ASP_PV411.Services.Random;
 using ASP_PV411.Services.Salt;
 using ASP_PV411.Services.Signature;
@@ -19,7 +21,8 @@ builder.Services.AddHash();
 builder.Services.AddSalt();
 builder.Services.AddKdf();
 builder.Services.AddSignature();
-
+builder.Services.AddOtp();
+builder.Services.AddFolderName();
 
 var app = builder.Build();
 
