@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Forms";
+}
+<div class="text-center">
+    <h1 class="display-4">Форми. Передача даних до сервера</h1>
+</div>
+
+<p>
+    HTML-форми - існтрументарій HTML для передачі даних, що їх вводить користувач до серверної частини сайту. Форми задаються тегом <code>&lt;form&gt;&lt;/form&gt;</code> і автоматично "збирають" дані з усіх елементів форм (
+    <code>input</code>,
+    <code>select</code>,
+    <code>textarea</code>,
+    <code>button</code>
+    ),
+
+    що мають атрибут
+    <code>name</code>. Якщо елемент форми знаходиться поза тілом тегу <code>form</code>, то належність до форми можна задати атрибутом <code>form</code>:
+    <code>&lt;input form="form-id" .../&gt;</code>
+    <br />
+    Запуск надсиланння форми забезпечує елемент з типом <code>submit</code>
+</p>
+
+<p>
+    Самі форми відрізняються методами та способами передачі даних. Методи:
+    <code>get</code> - дані включаються в адресний рядок; <br />
+    <code>post</code> - у тіло запиту адреса при цьому не змінюється (у т.ч. адреса сама може містити query-параметри).
+</p>
+<div class="row border m-3 p-3">
+    <div class="col">
+        <form method="get">
+            <h3>Форма з методом <code>Get</code></h3>
+            <input name="data" value="123" />
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-send"></i>
+            </button>
+        </form>
+
+        @if (ViewData["data"] != null)
+        {
+            <span>Передано дані: @ViewData["data"]</span>
+        }
+    </div>
+
+    <div class="col">
+        <form method="post" asp-action="FormPost">
+            <h3>Форма з методом <code>Post</code></h3>
+            <input name="data" value="123" />
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-send"></i>
+            </button>
+        </form>
+
+        @if (ViewData["post-data"] != null)
+        {
+            <span>Передано дані: @ViewData["post-data"]</span>
+        }
+    </div>
+    
+    <div class="col">
+        <form method="get">
+            <h3>Форма без <code>Name</code></h3>
+            <input value="123" />
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-send"></i>
+            </button>
+        </form>
+    </div>
+</div>
+<p>
+    Способи передачі даних - технічні деталі формування HTTP-пакету.
+    <br />
+    <code>&lt;form enctype="application/x-www-form-urlencoded"&gt;&lt;/form&gt;</code> - розділяє параметри за принципом <code>name1 = val1 & name2 = val2 &...</code>
+    (цей спосіб діє за замовчанням)
+    <br />
+    <code>&lt;form enctype="multipart/form-data"&gt;&lt;/form&gt;</code> - формує запит з кількох частин, передаючи кожен параметр з окремими заголовками та тілом.
+    Даний спосіб дозволяє передавати файли (за умови, що використовується метод post).
+</p>
+<p>
+    Атрибут форми <code>action</code> задає адресу переходу, якщо він не зазначений, то дані передаються на поточну адресу, на якій знаходиться форма. Для ASP також можливо використовувати <code>ASP-...</code> атрибути.
+</p>

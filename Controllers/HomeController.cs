@@ -42,7 +42,45 @@ namespace ASP_PV411.Controllers
         {
             return View();
         }
-        
+
+        public IActionResult Forms([FromQuery] string? data)
+        {
+            /* Binding (model binding) - процес в ASP, який автоматично зв'язує параметри, що передаються у запиті, із аргументами із параметрами методів контролера. Якщо зв'язування не вдається (виникають помилки), то автоматично формується відповідь-помилка.
+             * Зв'язування відбувається за іменами - назва параметра методу має збігатися із назвою параметра, що приходить з форми*/
+            ViewData["data"] = data;
+
+            /* Якщо було надсилання post-даних, то при переході (Redirect) на даний метод у сесії буде наявний параметр "data". Слід перевірити його існування, за наявності обробити та видалити з сесії, щоб при повторному заході він вже не оброблявся.
+             */
+
+            if (HttpContext.Session.Keys.Contains("data"))
+            {
+                ViewData["post-data"] = HttpContext.Session.GetString("data");
+                HttpContext.Session.Remove("data");
+            }
+
+            return View();
+        }
+
+        public IActionResult FormPost([FromForm] string data)
+        {
+            /* Проблема з Post-даними виникає, коли користувач намагається оновити сторінку браузера, що побудована за результатами надсилання форми - брузер видає попередженння, що не стилізується та може спантеличити користувача.
+             * Застосовується наступна схема:
+             * BROWSER                                                   SERVER                     Session
+             * - запускається метод post data = 123 ---------> зберігає дані (data = 123) --------> data = 123
+             *                                                      Redirect                         |   
+             *         <---------------------------------------                                      |
+             *                                  і повідомляє про необхідність переходу на іншу       |
+             *                                  адресу                                               |
+             * GET                                                                                   |
+             *     ----------------------------> Відновлюємо збережені дані                          |
+             *                                   та формуємо результат                               data = 123
+             */
+
+            HttpContext.Session.SetString("data", data);
+
+            return RedirectToAction(nameof(Forms));
+        }
+
         public IActionResult Services()
         {
             ViewData["password"] = $"Default length (6): {_otpService.GetOneTimePassword()} | " +
@@ -52,7 +90,7 @@ namespace ASP_PV411.Controllers
 
             return View();
         }
-        
+
         public IActionResult IoC()
         {
 
@@ -104,7 +142,7 @@ namespace ASP_PV411.Controllers
         {
             return View();
         }
-        
+
         public IActionResult Products()
         {
             HomeProductsViewModel model = new()
