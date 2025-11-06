@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using ASP_PV411.Models;
+﻿using ASP_PV411.Models;
 using ASP_PV411.Models.Home;
 using ASP_PV411.Services.FolderName;
 using ASP_PV411.Services.Hash;
@@ -10,6 +9,8 @@ using ASP_PV411.Services.Salt;
 using ASP_PV411.Services.Signature;
 using ASP_PV411.Services.Timestamp;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ASP_PV411.Controllers
 {
@@ -41,6 +42,30 @@ namespace ASP_PV411.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult FormsHomework([FromQuery] List<string>? name)
+        {
+            if (name != null)
+            {
+                ViewData["fullName"] = string.Join(' ', name);
+                if (HttpContext.Session.Keys.Contains("fullName"))
+                {
+                    ViewData["post-fullName"] = HttpContext.Session.GetString("fullName");
+                    HttpContext.Session.Remove("fullName");
+                }
+            }
+
+            return View();
+        }
+
+        public IActionResult FormPostFullName([FromForm] List<string> name)
+        {
+            string fullName = string.Join(' ', name);
+
+            HttpContext.Session.SetString("fullName", fullName);
+
+            return RedirectToAction(nameof(FormsHomework));
         }
 
         public IActionResult Forms([FromQuery] string? data)
@@ -125,10 +150,10 @@ namespace ASP_PV411.Controllers
         {
             // обмінні об'єкти, що дозволяють передати дані від контролера до представлення
             // dynamic
-            ViewBag.arr1 = new String[] { "string1", "string2", "string3" };
+            ViewBag.arr1 = new string[] { "string1", "string2", "string3" };
 
             // dictionary
-            ViewData["arr2"] = new String[] { "string4", "string5", "string6" };
+            ViewData["arr2"] = new string[] { "string4", "string5", "string6" };
 
             return View();
         }

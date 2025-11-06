@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "FormsHomework";
+}
+<div class="text-center">
+    <h1 class="display-4">Форми. Практика</h1>
+</div>
+
+<div class="border m-3 p-3">
+    <h2>
+        ПІБ: <code>Get</code>
+    </h2>
+
+    <div>
+        <form method="get" class="row d-flex gap-sm-3">
+            <div class="row d-flex justify-content-between">
+                <div class="col">
+                    <h3>Ім'я</h3>
+                    <input name="name" placeholder="Jesse" />
+                </div>
+
+                <div class="col">
+                    <h3>Прізвище</h3>
+                    <input name="name" placeholder="Pinkman" />
+                </div>
+
+                <div class="col">
+                    <h3>По-батькові</h3>
+                    <input name="name" placeholder="Optional" />
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="bi bi-send">Get</i>
+                </button>
+            </div>
+        </form>
+
+        @if (ViewData["fullName"] != null)
+        {
+            <span>Got data: @ViewData["fullName"]</span>
+        }
+    </div>
+</div>
+
+<div class="border m-3 p-3">
+    <h2>
+        ПІБ: <code>Post</code>
+    </h2>
+
+    <div>
+        <form method="post" class="row d-flex gap-sm-3" asp-action="FormPostFullName">
+            <div class="row d-flex justify-content-between">
+                <div class="col">
+                    <h3>Ім'я</h3>
+                    <input name="name" placeholder="Jesse" />
+                </div>
+
+                <div class="col">
+                    <h3>Прізвище</h3>
+                    <input name="name" placeholder="Pinkman" />
+                </div>
+
+                <div class="col">
+                    <h3>По-батькові</h3>
+                    <input name="name" placeholder="Optional" />
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="bi bi-send">Post</i>
+                </button>
+            </div>
+        </form>
+
+        @if (ViewData["post-fullName"] != null)
+        {
+            <span>Posted data: @ViewData["post-fullName"]</span>
+        }
+    </div>
+</div>
