@@ -9,7 +9,9 @@ using ASP_PV411.Services.Salt;
 using ASP_PV411.Services.Signature;
 using ASP_PV411.Services.Timestamp;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Diagnostics;
+using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ASP_PV411.Controllers
@@ -106,6 +108,58 @@ namespace ASP_PV411.Controllers
             return RedirectToAction(nameof(Forms));
         }
 
+        public IActionResult FormModels(HomeDemoFormModel? formModel)
+        {
+            if (Request.Method == "POST")
+            {
+                // Зберігаємо дані (модель) у сесії, попередньо серіалізуємо
+                // Оскільки сесія не зберігає посилання
+
+                string json = JsonSerializer.Serialize(formModel);
+                HttpContext.Session.SetString(nameof(HomeDemoFormModel), json);
+
+                // також зберігаємо результати валідації моделі
+                Dictionary<string, string> dict = [];
+                foreach (var kv in ModelState)
+                {
+                    dict[kv.Key] = string.Join(", ", kv.Value.Errors.Select(e => e.ErrorMessage));
+                }
+                
+                json = JsonSerializer.Serialize(dict);
+                HttpContext.Session.SetString(nameof(ModelState), json);
+
+                return RedirectToAction(nameof(FormModels));
+            }
+            else
+            {
+                // готуємо модель представлення 
+                HomeDemoViewModel viewModel = new()
+                {
+                    PageTitle = "Форми II. Моделі форм",
+                    FormTitle = "Заповніть наступні дані:"
+                };
+
+                //перевіряємо чи є збережена у сесії модель форми
+                if (HttpContext.Session.Keys.Contains(nameof(HomeDemoFormModel)))
+                {
+                    //якщо є, то десеріалізуємо та переносимо до моделі представлень
+                    viewModel.FormModel = JsonSerializer.Deserialize<HomeDemoFormModel>(
+                        HttpContext.Session.GetString(nameof(HomeDemoFormModel))!
+                        );
+
+                    // також відновлюємо результати валідації моделі
+                    viewModel.ModelErrors = JsonSerializer.Deserialize<Dictionary<string, string>>(
+                        HttpContext.Session.GetString(nameof(ModelState))!
+                        );
+                }
+
+                // передаємо модель на представлення
+                return View(viewModel);
+            }
+
+
+        }
+
         public IActionResult Services()
         {
             ViewData["password"] = $"Default length (6): {_otpService.GetOneTimePassword()} | " +
@@ -183,6 +237,8 @@ namespace ASP_PV411.Controllers
 
             return View(model);
         }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

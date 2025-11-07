@@ -1,0 +1,64 @@
+﻿@model ASP_PV411.Models.Home.HomeDemoViewModel
+
+@{
+    ViewData["Title"] = "Forms";
+}
+<div class="text-center">
+    <h1 class="display-4">@Model.PageTitle</h1>
+</div>
+
+<p>
+    Моделі форм дозволяють групувати дані для комплексних форм, а також допомагати з задачами валідації (перевірки даних).
+</p>
+<form method="post" class="border m-3 p-3">
+    <h3>@Model.FormTitle</h3>
+    <div class="row">
+        <div class="col">
+            <div class="input-group mb-3">
+                <span class="input-group-text"
+                      id="username-addon">
+                    <i class="bi bi-person-vcard"></i>
+                </span>
+                @{
+                    bool isInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["user-name"]);
+                    bool isValid = Model.ModelErrors != null && !isInvalid;
+                }
+
+                @* Якщо є передача даних форми, то відновлюємо їх у формі *@
+                <input type="text"
+                       value="@Model.FormModel?.UserName"
+                       name="user-name"
+                       class="form-control @(isValid ? "is-valid" : "") @(isInvalid ? "is-invalid" : "")"
+                       placeholder="Username"
+                       aria-label="Username"
+                       aria-describedby="username-addon">
+
+                @if (isInvalid)
+                {
+                    <div class="invalid-feedback">
+                        @(Model.ModelErrors!["user-name"])
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <span class="input-group-text"
+                      id="user-email-addon">
+                    <i class="bi bi-envelope-at"></i>
+                </span>
+                <input type="email"
+                       value="@Model.FormModel?.UserEmail"
+                       name="user-email"
+                       class="form-control"
+                       placeholder="E-mail"
+                       aria-label="E-mail"
+                       aria-describedby="user-email-addon">
+            </div>
+        </div>
+    </div>
+
+    <button type="submit">
+        Передати дані
+    </button>
+</form>
