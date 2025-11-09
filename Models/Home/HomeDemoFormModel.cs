@@ -10,6 +10,7 @@ namespace ASP_PV411.Models.Home
         public string UserName { get; set; } = null!;
         
         [FromForm(Name = "user-email")]
+        [Required(ErrorMessage = "Поле Email не може бути пустим")]
         public string UserEmail { get; set; } = null!;
 
     }
