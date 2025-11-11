@@ -20,20 +20,20 @@
                     <i class="bi bi-person-vcard"></i>
                 </span>
                 @{
-                    bool isUsernameInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["user-name"]);
-                    bool isUsernameValid = Model.ModelErrors != null && !isUsernameInvalid;
+                    bool isInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["user-name"]);
+                    bool isValid = Model.ModelErrors != null && !isInvalid;
                 }
 
                 @* Якщо є передача даних форми, то відновлюємо їх у формі *@
                 <input type="text"
                        value="@Model.FormModel?.UserName"
                        name="user-name"
-                       class="form-control @(isUsernameValid ? "is-valid" : "") @(isUsernameInvalid ? "is-invalid" : "")"
+                       class="form-control @(isValid ? "is-valid" : "") @(isInvalid ? "is-invalid" : "")"
                        placeholder="Username"
                        aria-label="Username"
                        aria-describedby="username-addon">
 
-                @if (isUsernameInvalid)
+                @if (isInvalid)
                 {
                     <div class="invalid-feedback">
                         @(Model.ModelErrors!["user-name"])
@@ -49,24 +49,88 @@
                 </span>
 
                 @{
-                    bool isEmailInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["user-name"]);
-                    bool isEmailValid = Model.ModelErrors != null && !isEmailInvalid;
+                    isInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["user-name"]);
+                    isValid = Model.ModelErrors != null && !isInvalid;
                 }
 
                 <input type="email"
                        value="@Model.FormModel?.UserEmail"
                        name="user-email"
-                       class="form-control @(isEmailValid ? "is-valid" : "") @(isEmailInvalid ? "is-invalid" : "")"
+                       class="form-control @(isValid ? "is-valid" : "") @(isInvalid ? "is-invalid" : "")"
                        placeholder="E-mail"
                        aria-label="E-mail"
                        aria-describedby="user-email-addon">
-                @if (isEmailInvalid)
+                @if (isInvalid)
                 {
                     <div class="invalid-feedback">
                         @(Model.ModelErrors!["user-email"])
                     </div>
                 }
 
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="input-group mb-3">
+
+                <span class="input-group-text"
+                      id="user-password-addon">
+                    <i class="bi bi-key"></i>
+                </span>
+
+                @{
+                    isInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["user-password"]);
+                }
+
+                <input type="password"
+                    title="password"
+                       @* value - для паролів не прийнято відтворювати значення *@
+                       id="user-password-addon"
+                       name="user-password"
+                       class="form-control @(isInvalid ? "is-invalid" : "")"
+                       placeholder="Password"
+                       aria-label="Password"
+                       aria-describedby="user-password-addon">
+
+                @if (isInvalid)
+                {
+                    <div class="invalid-feedback">
+                        @(Model.ModelErrors!["user-password"])
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col" title="date">
+            <div class="input-group mb-3">
+
+                <span class="input-group-text"
+                      id="user-birthdate-addon">
+                    <i class="bi bi-cake"></i>
+                </span>
+
+                @{
+                    isInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["user-birthdate"]);
+                    isValid = Model.ModelErrors != null && !isInvalid;
+                }
+
+                <input type="date"
+                       @* value - для паролів не прийнято відтворювати значення *@
+                       title="Date of birth"
+                       id="user-birthdate-addon"
+                       name="user-birthdate"
+                       class="form-control  @(isValid ? "is-valid" : "") @(isInvalid ? "is-invalid" : "")"
+                       aria-label="Date of birth"
+                       aria-describedby="user-birthdate-addon"
+                       value="@Model.FormModel?.UserBirthdate.ToString("yyyy-MM-dd")">
+
+                @if (isInvalid)
+                {
+                    <div class="invalid-feedback">
+                        @(Model.ModelErrors!["user-birthdate"])
+                    </div>
+                }
             </div>
         </div>
     </div>

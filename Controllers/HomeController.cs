@@ -118,6 +118,13 @@ namespace ASP_PV411.Controllers
                 string json = JsonSerializer.Serialize(formModel);
                 HttpContext.Session.SetString(nameof(HomeDemoFormModel), json);
 
+                // Додаткова валідація, що не задається атрибутами
+                if (DateOnly.FromDateTime(DateTime.Today).DayNumber - formModel.UserBirthdate.DayNumber < 16 * 365)
+                {
+                    ModelState.AddModelError("user-birthdate", "Самостійна реєстрація дозволена з 16 років!");
+                }
+
+
                 // також зберігаємо результати валідації моделі
                 Dictionary<string, string> dict = [];
                 foreach (var kv in ModelState)
