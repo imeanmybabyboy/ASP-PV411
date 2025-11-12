@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ASP_PV411.Controllers
@@ -119,9 +120,44 @@ namespace ASP_PV411.Controllers
                 HttpContext.Session.SetString(nameof(HomeDemoFormModel), json);
 
                 // Додаткова валідація, що не задається атрибутами
-                if (DateOnly.FromDateTime(DateTime.Today).DayNumber - formModel.UserBirthdate.DayNumber < 16 * 365)
+                if (formModel!.UserBirthdate != null)
                 {
-                    ModelState.AddModelError("user-birthdate", "Самостійна реєстрація дозволена з 16 років!");
+                    if (DateOnly.FromDateTime(DateTime.Today).DayNumber - formModel.UserBirthdate?.DayNumber < 16 * 365)
+                    {
+                        ModelState.AddModelError("user-birthdate", "Самостійна реєстрація дозволена з 16 років!");
+                    }
+                }
+
+                // Окремо про пароль:
+                if (!string.IsNullOrEmpty(formModel.UserPassword))
+                {
+                    if (!Regex.IsMatch(formModel.UserPassword, @"\d"))
+                    {
+                        ModelState.AddModelError("user-password", "Пароль повинен містити принаймні одну цифру");
+                    }
+                    if (!Regex.IsMatch(formModel.UserPassword, @"\W"))
+                    {
+                        ModelState.AddModelError("user-password", "Пароль повинен містити принаймні один спецсимвол");
+                    }
+                }
+
+
+                // валідація номера телефону
+
+                if (!string.IsNullOrEmpty(formModel.UserPhoneNumber))
+                {
+                    if (!Regex.IsMatch(formModel.UserPhoneNumber, @"\+380+"))
+                    {
+                        ModelState.AddModelError("user-phone-number", @"Номер телефону повинен починатися з '+380'");
+                    }
+                    if (!Regex.IsMatch(formModel.UserPhoneNumber, @"^\+?[0-9]+$"))
+                    {
+                        ModelState.AddModelError("user-phone-number", @"Номер телефону повинен містити лише цифри");
+                    }
+                    if (formModel.UserPhoneNumber.Length != 13)
+                    {
+                        ModelState.AddModelError("user-phone-number", @"Довжина номера телефону має становити 9 символів після +380");
+                    }
                 }
 
 
@@ -131,7 +167,7 @@ namespace ASP_PV411.Controllers
                 {
                     dict[kv.Key] = string.Join(", ", kv.Value.Errors.Select(e => e.ErrorMessage));
                 }
-                
+
                 json = JsonSerializer.Serialize(dict);
                 HttpContext.Session.SetString(nameof(ModelState), json);
 

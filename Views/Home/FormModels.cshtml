@@ -84,7 +84,7 @@
                 }
 
                 <input type="password"
-                    title="password"
+                       title="password"
                        @* value - для паролів не прийнято відтворювати значення *@
                        id="user-password-addon"
                        name="user-password"
@@ -116,14 +116,13 @@
                 }
 
                 <input type="date"
-                       @* value - для паролів не прийнято відтворювати значення *@
                        title="Date of birth"
                        id="user-birthdate-addon"
                        name="user-birthdate"
                        class="form-control  @(isValid ? "is-valid" : "") @(isInvalid ? "is-invalid" : "")"
                        aria-label="Date of birth"
                        aria-describedby="user-birthdate-addon"
-                       value="@Model.FormModel?.UserBirthdate.ToString("yyyy-MM-dd")">
+                       value="@Model.FormModel?.UserBirthdate?.ToString("yyyy-MM-dd")">
 
                 @if (isInvalid)
                 {
@@ -135,7 +134,67 @@
         </div>
     </div>
 
-    <button class="btn btn-primary" type="submit">
+    <div class="row">
+        <div class="col">
+            <div class="form-check">
+                <div class="mb-3">
+                    @{
+                        isInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["agreement"]);
+                        isValid = Model.ModelErrors != null && !isInvalid;
+                    }
+
+                    <input class="form-check-input @(isValid ? "is-valid" : "") @(isInvalid ? "is-invalid" : "")"
+                           type="checkbox"
+                           value="@Model.FormModel?.IsAgree ? " true" : "false" "
+                           id="checkDefault"
+                           name="agreement">
+                    <label class="form-check-label" for="checkDefault">
+                        Погоджуюсь з <a asp-action="Privacy">правилами сайту</a>
+                    </label>
+
+                    @if (isInvalid)
+                    {
+                        <div class="invalid-feedback">
+                            @(Model.ModelErrors!["agreement"])
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="input-group mb-3">
+
+                <span class="input-group-text"
+                      id="user-phone-number-addon">
+                    <i class="bi bi-phone"></i>
+                </span>
+
+                @{
+                    isInvalid = !string.IsNullOrEmpty(Model.ModelErrors?["user-phone-number"]);
+                    isValid = Model.ModelErrors != null && !isInvalid;
+                }
+
+                <input type="tel"
+                       title="Phone number"
+                       id="user-phone-number-addon"
+                       name="user-phone-number"
+                       class="form-control  @(isValid ? "is-valid" : "") @(isInvalid ? "is-invalid" : "")"
+                       aria-label="Phone number"
+                       aria-describedby="user-phone-number-addon"
+                       value="@Model.FormModel?.UserPhoneNumber">
+
+                @if (isInvalid)
+                {
+                    <div class="invalid-feedback">
+                        @(Model.ModelErrors!["user-phone-number"])
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary mt-3" type="submit">
         Передати дані
     </button>
 </form>
