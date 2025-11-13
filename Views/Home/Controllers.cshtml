@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Controllers";
+}
+<div class="text-center">
+    <h1 class="display-4">
+        <i class="bi bi-sign-intersection-y"></i> Контролери
+    </h1>
+</div>
+
+<p>
+    Контролери, за призначенням, є частиною проєкту, яка відповідає за взаємодію з оточенням (користувачами), визначають необхідні дані (моделі), та передають їх до представлень.
+</p>
+<p>
+    Контролери в ASP поділяються на дві групи:
+</p>
+<ul>
+    <li>MVC-контролери</li>
+    <li>API-контролери</li>
+</ul>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>MVC</th>
+            <th>API</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Базовий клас</td>
+            <td>Controller (більш комплексний)</td>
+            <td>ControllerBase (менш комплексний)</td>
+        </tr>
+        <tr>
+            <td>Маршрутизація</td>
+            <td>За адресою (action)</td>
+            <td>За методом запиту</td>
+        </tr>
+        <tr>
+            <td>Приклади:</td>
+            <td>
+                GET /Mvc/Action/ <button onclick="getMvcAction()" class="btn btn-info mb-1"><i class="bi bi-send"></i> </button>
+                <br /> POST: /Mvc/Action <button onclick="postMvcAction()" class="btn btn-info "><i class="bi bi-send"></i> </button>
+                <br /> -- ведуть до однієї точки 
+            </td>
+            <td>
+                GET /API/Action/ <button onclick="getApiAction()" class="btn btn-info mb-1"> <i class="bi bi-send"></i> </button>
+                <br /> POST: /API/Action <button onclick="postApiAction()" class="btn btn-info "> <i class="bi bi-send"></i> </button>
+                <br /> -- ведуть до різних точок 
+            </td>
+        </tr>
+        <tr>
+            <td>Тип повернення</td>
+            <td>IActionResult: ViewResult, JsonResult, RedirectResult, ContentResult, ... </td>
+            <td>Object - довільний тип повернення</td>
+        </tr>
+        <tr>
+            <td>Очікуваний результат</td>
+            <td>Залежить від повернутого типу</td>
+            <td>JSON для всіх типів, окрім <code>string</code>, для якого Text</td>
+        </tr>
+        <tr>
+            <td>Область призначення</td>
+            <td>Багатосторінкові сайти з перевагою переглядів над іншими діями. Сайти з серверною активністю</td>
+            <td>Забезпечення повного набору операцій з даними (CRUD). Сайти з відокремленим фронт ендом</td>
+        </tr>
+        <tr>
+            <td>Внутрішня маршрутизація</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    function getMvcAction() {
+        fetch("/Mvc/Action", {method: "GET"}).then(r => r.text()).then(alert);
+    }
+    function postMvcAction() {
+        fetch("/Mvc/Action", {method: "POST"}).then(r => r.text()).then(alert);
+    }
+    function getApiAction() {
+        fetch("/API/Action", {method: "GET"}).then(r => r.text()).then(alert);
+    }
+    function postApiAction() {
+        fetch("/API/Action", {method: "POST"}).then(r => r.text()).then(alert);
+    }
+</script>
