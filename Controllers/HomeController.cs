@@ -52,6 +52,11 @@ namespace ASP_PV411.Controllers
             return View();
         }
 
+        public IActionResult ControllersHomework()
+        {
+            return View();
+        }
+
         public IActionResult FormsHomework([FromQuery] List<string>? name)
         {
             if (name != null)

@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "ControllersHomework";
+}
+<div class="text-center">
+    <h1 class="display-4">Контролери. Практика</h1>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Контролер</th>
+            <th>Метод 1</th>
+            <th>Метод 2</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>MVC</td>
+            <td><button class="btn btn-primary" onclick="getMvcInfo()">Mvc()</button> </td>
+            <td><button class="btn btn-primary" onclick="getApiInfo()">Api()</button> </td>
+        </tr>
+        <tr>
+            <td>API</td>
+            <td><button class="btn btn-primary" onclick="getApiInfoMvc()">GET Mvc</button> </td>
+            <td><button class="btn btn-primary" onclick="postApiInfoApi()">POST Api</button> </td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+        function getMvcInfo() {
+            fetch("/Info/Mvc", {method: "GET"}).then(r => r.text()).then(alert);
+        }
+        function getApiInfo() {
+            fetch("/Info/Api", {method: "GET"}).then(r => r.text()).then(alert);
+        }
+        function getApiInfoMvc() {
+        fetch("/api/info", {method: "GET"}).then(r => r.text()).then(alert);
+        }
+        function postApiInfoApi() {
+        fetch("/api/info", {method: "POST"}).then(r => r.text()).then(alert);
+        }
+</script>
