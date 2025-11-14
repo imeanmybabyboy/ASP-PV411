@@ -47,6 +47,11 @@ namespace ASP_PV411.Controllers
             return View();
         }
 
+        public IActionResult Db()
+        {
+            return View();
+        }
+
         public IActionResult Controllers()
         {
             return View();
