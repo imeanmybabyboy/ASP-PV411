@@ -10,6 +10,8 @@ namespace ASP_PV411.Data
         public DbSet<Entities.User> Users { get; set; }
         public DbSet<Entities.UserRole> UserRoles { get; set; }
         public DbSet<Entities.Token> Tokens { get; set; }
+        public DbSet<Entities.UserData> UserDatas { get; set; }
+
         public DataContext(DbContextOptions options) : base(options) { }
     }
 }
