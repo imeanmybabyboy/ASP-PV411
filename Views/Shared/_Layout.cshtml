@@ -49,6 +49,12 @@
                             </a>
                         </li>
                     </ul>
+
+                    <button type="button" class="btn btn-outline-secondary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#authModal">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -64,6 +70,38 @@
             &copy; 2025 - ASP_PV411 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="authModalLabel">Вхід до сайту</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="auth-form">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="login-addon"><i class="bi bi-key"></i></span>
+                            <input type="text" class="form-control "
+                                   name="user-login" placeholder="Login"
+                                   aria-label="Login" aria-describedby="login-addon">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="user-password-addon"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control "
+                                   name="user-password" placeholder="Password"
+                                   aria-label="Password" aria-describedby="user-password-addon">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="btn btn-primary" form="auth-form">Вхід</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

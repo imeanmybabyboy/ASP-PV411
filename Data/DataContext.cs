@@ -1,4 +1,5 @@
 ﻿using ASP_PV411.Data.Entities;
+using ASP_PV411.Services.Kdf;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASP_PV411.Data
@@ -7,11 +8,74 @@ namespace ASP_PV411.Data
     {
         // В ASP прийнято конфігурувати контекст як сервіс (у Program.cs), тому переозначається конструктор, що приймає параметр-конфігуратор
 
+        private readonly IKdfService _kdfService;
+
         public DbSet<Entities.User> Users { get; set; }
         public DbSet<Entities.UserRole> UserRoles { get; set; }
         public DbSet<Entities.Token> Tokens { get; set; }
-        public DbSet<Entities.UserData> UserDatas { get; set; }
+        public DataContext(DbContextOptions options, IKdfService kdfService) : base(options)
+        {
+            _kdfService = kdfService;
+        }
 
-        public DataContext(DbContextOptions options) : base(options) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Entities.User>()
+                .HasIndex(u => u.Login) // індекс - інформація про впорядкування
+                .IsUnique();
+
+
+            modelBuilder.Entity<Entities.User>()
+                .HasOne(u => u.Role)
+                .WithMany()
+                .HasForeignKey(u => u.RoleId);
+
+            modelBuilder.Entity<Entities.Token>()
+                .HasOne(t => t.User)
+                .WithMany();
+
+
+            ///////////// Сідування 
+            modelBuilder.Entity<Entities.UserRole>()
+                .HasData(
+                    new Entities.UserRole
+                    {
+                        Id = "Admin",
+                        Description = "Full access role",
+                        CanCreate = 1,
+                        CanDelete = 1,
+                        CanRead = 1,
+                        CanUpdate = 1
+                    },
+
+                    new Entities.UserRole
+                    {
+                        Id = "User",
+                        Description = "Self registered user",
+                        CanCreate = 0,
+                        CanDelete = 0,
+                        CanRead = 0,
+                        CanUpdate = 0
+                    }
+                );
+
+            string salt = "F94049E318A2";
+            string dk = _kdfService.Dk("Admin", salt);
+
+            modelBuilder.Entity<Entities.User>()
+                .HasData(
+                    new Entities.User
+                    {
+                        Id = Guid.Parse("85FE8311-DF9C-4322-B093-F94049E318A2"),
+                        Name = "Administrator",
+                        Email = "admin@change.me",
+                        Salt = salt,
+                        Login = "Admin",
+                        Dk = dk,
+                        RoleId = "Admin",
+                        RegisterAt = DateTime.MinValue,
+                    }
+                );
+        }
     }
 }
