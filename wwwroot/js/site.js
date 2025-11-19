@@ -15,6 +15,46 @@
         // userPass = login + ":" + password
         // basicCredentials = Base64.encode(userPass)
         // header Authorization = Basic basicCredentials
+
+        let invalid = login.length === 0;
+        const loginCont = form.querySelector("div:nth-child(1)");
+
+        if (invalid) {
+            let loginInvalid = loginCont.querySelector(".invalid-feedback")
+
+            if (!loginInvalid) {
+                loginInvalid = document.createElement("div");
+                loginInvalid.textContent = "Необхідно зазначити логін!";
+                loginInvalid.classList.add("invalid-feedback");
+
+                loginCont.append(loginInvalid);
+            }
+            loginCont.querySelector("input").classList.add("is-invalid");
+            loginCont.querySelector("input").classList.remove("is-valid");
+        } else {
+            loginCont.querySelector("input").classList.remove("is-invalid")
+            loginCont.querySelector("input").classList.add("is-valid");
+        }
+
+        invalid = password.length === 0;
+        const passwordCont = form.querySelector("div:nth-child(2)");
+
+        if (invalid) {
+            let passwordInvalid = passwordCont.querySelector(".invalid-feedback")
+
+            if (!passwordInvalid) {
+                passwordInvalid = document.createElement("div");
+                passwordInvalid.textContent = "Необхідно зазначити пароль!";
+                passwordInvalid.classList.add("invalid-feedback");
+
+                passwordCont.append(passwordInvalid);
+            }
+            passwordCont.querySelector("input").classList.add("is-invalid");
+            passwordCont.querySelector("input").classList.remove("is-valid");
+        } else {
+            passwordCont.querySelector("input").classList.remove("is-invalid")
+            passwordCont.querySelector("input").classList.add("is-valid");
+        }
     }
 })
 
