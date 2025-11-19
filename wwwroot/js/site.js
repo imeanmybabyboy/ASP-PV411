@@ -1,4 +1,20 @@
-﻿document.addEventListener("submit", (e) => {
+﻿class Base64 {
+    static #textEncoder = new TextEncoder();
+    static #textDecoder = new TextDecoder();
+
+    // https://datatracker.ietf.org/doc/html/rfc4648#section-4
+    static encode = (str) => btoa(String.fromCharCode(...Base64.#textEncoder.encode(str)));
+    static decode = (str) => Base64.#textDecoder.decode(Uint8Array.from(atob(str), c => c.charCodeAt(0)));
+
+    // https://datatracker.ietf.org/doc/html/rfc4648#section-5
+    static encodeUrl = (str) => this.encode(str).replace(/\+/g, '-').replace(/\//g, '_');
+    static decodeUrl = (str) => this.decode(str.replace(/\-/g, '+').replace(/\_/g, '/'));
+
+    static jwtEncodeBody = (header, payload) => this.encodeUrl(JSON.stringify(header)) + '.' + this.encodeUrl(JSON.stringify(payload));
+    static jwtDecodePayload = (jwt) => JSON.parse(this.decodeUrl(jwt.split('.')[1]));
+}
+
+document.addEventListener("submit", (e) => {
     const form = e.target;
 
     if (form && form["id"] == "auth-form") {
@@ -7,14 +23,6 @@
 
         const login = formData.get("user-login");
         const password = formData.get("user-password");
-        console.log(`${login}: ${password}`)
-
-        // RFC 6717
-        // https://datatracker.ietf.org/doc/html/rfc7617
-
-        // userPass = login + ":" + password
-        // basicCredentials = Base64.encode(userPass)
-        // header Authorization = Basic basicCredentials
 
         let invalid = login.length === 0;
         const loginCont = form.querySelector("div:nth-child(1)");
@@ -31,6 +39,7 @@
             }
             loginCont.querySelector("input").classList.add("is-invalid");
             loginCont.querySelector("input").classList.remove("is-valid");
+            return;
         } else {
             loginCont.querySelector("input").classList.remove("is-invalid")
             loginCont.querySelector("input").classList.add("is-valid");
@@ -51,10 +60,30 @@
             }
             passwordCont.querySelector("input").classList.add("is-invalid");
             passwordCont.querySelector("input").classList.remove("is-valid");
+            return;
         } else {
             passwordCont.querySelector("input").classList.remove("is-invalid")
             passwordCont.querySelector("input").classList.add("is-valid");
         }
+
+
+        // RFC 7617
+        // https://datatracker.ietf.org/doc/html/rfc7617
+
+        const userPass = login + ":" + password
+        const basicCredentials = Base64.encode(userPass)
+        const header = "Authorization: Basic " + basicCredentials
+
+        fetch("/User/Authenticate", {
+            method: "GET",
+            headers: {
+                "Authorization": "Basic " + basicCredentials
+            }
+        }).then(r => {
+            if (r.status >= 400) {
+                r.text().then(alert);
+            }
+        })
     }
 })
 
