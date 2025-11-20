@@ -36,7 +36,7 @@ namespace ASP_PV411.Controllers
             if (!authHeader.StartsWith(scheme))
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content($"Invalid Authorization scheme: {scheme} only");
+                return Content($"Invalid Authorization scheme: {scheme}only");
             }
 
 
@@ -58,7 +58,7 @@ namespace ASP_PV411.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content($"Invalid {scheme} Credentials format: {ex.Message}");
+                return Content($"Invalid {scheme}Credentials format: {ex.Message}");
             }
 
 
@@ -67,7 +67,7 @@ namespace ASP_PV411.Controllers
             if (parts.Length != 2)
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content($"Invalid {scheme} user-pass format: missing ':' separator");
+                return Content($"Invalid {scheme}user-pass format: missing ':' separator");
             }
 
             string login = parts[0];
