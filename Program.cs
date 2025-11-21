@@ -1,4 +1,5 @@
 ﻿using ASP_PV411.Data;
+using ASP_PV411.Middleware;
 using ASP_PV411.Services.FolderName;
 using ASP_PV411.Services.Hash;
 using ASP_PV411.Services.Kdf;
@@ -32,7 +33,7 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromSeconds(100);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -55,12 +56,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.UseSession();
+
+
+// Custom middleware
+app.UseAuthSession(); // додатковий Middleware
+
 
 app.MapControllerRoute(
     name: "default",

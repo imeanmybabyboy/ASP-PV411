@@ -1,7 +1,10 @@
 ﻿using ASP_PV411.Data;
+using ASP_PV411.Middleware;
 using ASP_PV411.Services.Kdf;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ASP_PV411.Controllers
 {
@@ -90,6 +93,9 @@ namespace ASP_PV411.Controllers
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return Content("Credentials rejected.");
             }
+
+            // якщо автентифікація пройшла успішно, то зберігаємо інформацію у сесії
+            HttpContext.Session.SetString(AuthSessionMiddleware.SessionKey, JsonSerializer.Serialize(user));
 
             return NoContent();
         }

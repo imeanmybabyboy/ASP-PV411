@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using ASP_PV411.Middleware
+@{
+    bool isAuthenticated = Context.Items.ContainsKey(AuthSessionMiddleware.SessionKey);
+
+    string? userName = isAuthenticated ? ((ASP_PV411.Data.Entities.User)Context.Items[AuthSessionMiddleware.SessionKey]!).Name : null;
+    string? userLetter = isAuthenticated ? userName![0].ToString() : null;
+    string? userTitle = isAuthenticated ? userName : null;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -48,13 +57,27 @@
                                 <i class="bi bi-database"></i>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" title="Middleware" asp-area="" asp-controller="Home" asp-action="Middleware">
+                                <i class="bi bi-arrow-bar-right"></i>
+                            </a>
+                        </li>
                     </ul>
 
-                    <button type="button" class="btn btn-outline-secondary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#authModal">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                    </button>
+                    @if (isAuthenticated)
+                    {
+                        <div title="@userTitle">@userLetter</div>
+                    }
+                    else
+                    {
+
+                        @* Button trigger modal *@
+                        <button type="button" class="btn btn-outline-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#authModal">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                        </button>
+                    }
                 </div>
             </div>
         </nav>
