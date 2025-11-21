@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASP_PV411.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251117173222_Seeding")]
+    [Migration("20251121201005_Seeding")]
     partial class Seeding
     {
         /// <inheritdoc />

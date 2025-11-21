@@ -15,6 +15,14 @@ namespace ASP_PV411.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
+            // перевіряємо, чи є запит на вихід з авторизованого режиму
+            if (context.Request.Query.ContainsKey("logout"))
+            {
+                context.Session.Remove(SessionKey);
+                context.Response.Redirect(context.Request.Path);
+                return; // _next - не буде виконуватися, робота перерветься
+            }
+
             // перевіряємо наявність у сесії збережених даних щодо автентифікації
             if (context.Session.Keys.Contains(SessionKey))
             {
@@ -25,6 +33,11 @@ namespace ASP_PV411.Middleware
 
             // Call the next delegate/middleware in the pipeline.
             await _next(context);
+        }
+
+        public static void SaveAuth(HttpContext context, Data.Entities.User user)
+        {
+            context.Session.SetString(AuthSessionMiddleware.SessionKey, JsonSerializer.Serialize(user));
         }
     }
 

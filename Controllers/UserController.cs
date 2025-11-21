@@ -95,7 +95,7 @@ namespace ASP_PV411.Controllers
             }
 
             // якщо автентифікація пройшла успішно, то зберігаємо інформацію у сесії
-            HttpContext.Session.SetString(AuthSessionMiddleware.SessionKey, JsonSerializer.Serialize(user));
+            AuthSessionMiddleware.SaveAuth(HttpContext, user);
 
             return NoContent();
         }

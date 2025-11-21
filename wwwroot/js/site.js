@@ -80,33 +80,38 @@ document.addEventListener("submit", (e) => {
                 "Authorization": "Basic " + basicCredentials
             }
         }).then(r => {
-            r.text().then((error) => {
-                if (error !== null) {
-                    let modalFooter = document.querySelector(".modal-footer");
-                    let errorCont = modalFooter.querySelector(".alert-danger");
+            if (r.status >= 400) {
+                r.text().then((error) => {
+                    if (error !== null) {
+                        let modalFooter = document.querySelector(".modal-footer");
+                        let errorCont = modalFooter.querySelector(".alert-danger");
 
-                    if (error === "") {
-                        errorCont.remove();
-                    } else {
-                        if (errorCont) {
+                        if (error === "") {
                             errorCont.remove();
+                        } else {
+                            if (errorCont) {
+                                errorCont.remove();
+                            }
+
+                            errorCont = document.createElement("div");
+                            errorCont.classList.add("alert");
+                            errorCont.classList.add("alert-danger");
+                            errorCont.classList.add("text-truncate");
+                            errorCont.style.width = "fit-content"
+                            errorCont.style.maxWidth = "250px"
+                            errorCont.style.padding = "6px"
+                            errorCont.title = error;
+                            errorCont.textContent = error;
+
+                            modalFooter.prepend(errorCont);
                         }
 
-                        errorCont = document.createElement("div");
-                        errorCont.classList.add("alert");
-                        errorCont.classList.add("alert-danger");
-                        errorCont.classList.add("text-truncate");
-                        errorCont.style.width = "fit-content"
-                        errorCont.style.maxWidth = "250px"
-                        errorCont.style.padding = "6px"
-                        errorCont.title = error;
-                        errorCont.textContent = error;
-
-                        modalFooter.prepend(errorCont);
                     }
-
-                }
-            })
+                })
+            }
+            else {
+                window.location.reload();
+            }
         })
     }
 })

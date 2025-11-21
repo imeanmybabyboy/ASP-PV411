@@ -62,6 +62,9 @@ namespace ASP_PV411.Data
             string salt = "F94049E318A2";
             string dk = _kdfService.Dk("Admin", salt);
 
+            string userSalt = "5875D913075F";
+            string userDk = _kdfService.Dk("user", userSalt);
+
             modelBuilder.Entity<Entities.User>()
                 .HasData(
                     new Entities.User
@@ -73,6 +76,18 @@ namespace ASP_PV411.Data
                         Login = "Admin",
                         Dk = dk,
                         RoleId = "Admin",
+                        RegisterAt = DateTime.MinValue,
+                    },
+
+                    new Entities.User
+                    {
+                        Id = Guid.Parse("5588B536-186B-436C-AA1A-5875D913075F"),
+                        Name = "user",
+                        Email = "newUser@example.com",
+                        Salt = userSalt,
+                        Login = "User",
+                        Dk = userDk,
+                        RoleId = "User",
                         RegisterAt = DateTime.MinValue,
                     }
                 );
