@@ -8,7 +8,6 @@ namespace ASP_PV411.Services.Kdf
 
     public class PbKdf1Service(IHashService hashService) : IKdfService
     {
-        private readonly int iterationsCount = 1000;
         private readonly int dkLength = 16;
 
         public string Dk(string password, string salt)

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace ASP_PV411.Middleware
@@ -28,7 +29,34 @@ namespace ASP_PV411.Middleware
             {
                 var user = JsonSerializer.Deserialize<Data.Entities.User>(context.Session.GetString(SessionKey)!)!;
 
-                context.Items[SessionKey] = user;
+                //context.Items[SessionKey] = user;
+
+                /* Використання (поширення) типу даних з сутностей БД має ряд недоліків:
+                 * - зчепленн модулів (шарів) - залежність другого модуля від типів даних першого модуля
+                 * - складність відокремлення модуля як сервісу, оскільки модуль, що залишається, втрачає зв'язок з потрібним типом
+                 * - складність використання сторонніх сервісів автентифікації (Гугл, ФБ тощо) - вони передають свої дані, можливо, несумісні з нашими типами даних
+                 * = Слід використовувати уніфікований інтерфейс, відокремлений від типізації - пари ключ-значення 
+                 */
+
+                context.User = new ClaimsPrincipal(                         // Слід використовувати уніфікований
+                    new ClaimsIdentity(                                     // інтерфейс відокремлений від
+                            [                                               // типізації - пари ключ-значення
+                                new Claim(ClaimTypes.Name,                  // Claim(тип, значення)
+                                    user.Name),                             //
+                                                                            //
+                        new Claim(ClaimTypes.Email,                         // Вони поєднуються до
+                                    user.Email),                            // ClaimsIdentity, до якої додається
+                                                                            // тип автентифікації
+                        new Claim(ClaimTypes.DateOfBirth,                   // nameof(AuthSessionMiddleware)
+                                    user.Birthdate?.ToString() ?? ""),      // за яким можна дізнатися
+                                                                            // походження Claims
+                        new Claim(ClaimTypes.NameIdentifier,                //
+                                    user.Login),                            // Технічно, користувач може мати
+                        new Claim(ClaimTypes.Sid, user.Id.ToString())       // декілька Identity різного
+                            ],                                              // походження
+                            nameof(AuthSessionMiddleware)                   //
+                        )
+                    );
             }
 
             // Call the next delegate/middleware in the pipeline.

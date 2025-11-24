@@ -1,7 +1,10 @@
 ﻿using ASP_PV411.Data;
 using ASP_PV411.Middleware;
+using ASP_PV411.Models.User;
 using ASP_PV411.Services.Kdf;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -15,6 +18,22 @@ namespace ASP_PV411.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult Profile()
+        {
+            bool isAuthenticated = HttpContext.User.Identity?.IsAuthenticated ?? false;
+
+            if (isAuthenticated)
+            {
+                string userId = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Sid).Value;
+                var user = dataContext.Users.Include(u => u.Role).First(u => u.Id == Guid.Parse(userId))!;
+                return View(new UserProfileViewModel() { User = user, IsPersonal = true });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Authenticate()

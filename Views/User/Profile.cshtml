@@ -1,0 +1,79 @@
+﻿@model ASP_PV411.Models.User.UserProfileViewModel;
+
+@{
+    ViewData["Title"] = "Profile";
+    bool isAuthenticated = Context.User.Identity?.IsAuthenticated ?? false;
+}
+<div class="text-center">
+    <h1 class="display-4">Кабінет користувача</h1>
+</div>
+
+@if (!isAuthenticated)
+{
+    <div id="auth-error" class="alert alert-danger text-center mt-4" role="alert">
+        Для перегляду профілю користувача потрібно авторизуватися
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col col-6 offset-3">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Назва</th>
+                        <th class="d-flex justify-content-between align-items-end">
+                            Значення
+                            <button id="btn-profile-edit" title="Редагувати дані" type="button" class="btn btn-outline-warning">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ім'я</td>
+                        <td data-profile-editable>@Model.User.Name</td>
+                    </tr>
+                    <tr>
+                        <td>E-mail</td>
+                        <td data-profile-editable>@Model.User.Email</td>
+                    </tr>
+                    <tr>
+                        <td>Логін</td>
+                        <td data-profile-editable>@Model.User.Login</td>
+                    </tr>
+
+                    @if (Model.User.Birthdate != null)
+                    {
+                        <tr>
+                            <td>Дата народження</td>
+                            <td>@Model.User.Birthdate.Value.ToString("dd.MM.yyyy")</td>
+                        </tr>
+
+                    }
+
+                    <tr>
+                        <td>Дата реєстрації</td>
+                        <td>@Model.User.RegisterAt.ToString("dd.MM.yyyy (HH:mm)")</td>
+                    </tr>
+                    <tr>
+                        <td>Роль (права)</td>
+                        <td>
+                            @Model.User.RoleId (
+                            @if (@Model.User.Role.CanRead > 0)
+                            {
+                                <b>Перегляд</b>
+                            }
+                            else
+                            {
+                                <s>Перегляд</s>
+                            }
+                            )
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

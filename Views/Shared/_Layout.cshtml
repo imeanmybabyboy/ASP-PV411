@@ -1,10 +1,17 @@
 ﻿@using ASP_PV411.Middleware
+@using System.Security.Claims
 @{
-    bool isAuthenticated = Context.Items.ContainsKey(AuthSessionMiddleware.SessionKey);
+    // bool isAuthenticated = Context.Items.ContainsKey(AuthSessionMiddleware.SessionKey);
 
-    var user = isAuthenticated ? ((ASP_PV411.Data.Entities.User)Context.Items[AuthSessionMiddleware.SessionKey]!) : null;
-    string? userLetter = isAuthenticated ? user!.Name[0].ToString() : null;
-    string? userTitle = isAuthenticated ? user!.Email : null;
+    // var user = isAuthenticated ? ((ASP_PV411.Data.Entities.User)Context.Items[AuthSessionMiddleware.SessionKey]!) : null;
+    // string? userLetter = isAuthenticated ? user!.Name[0].ToString() : null;
+    // string? userTitle = isAuthenticated ? user!.Email : null;
+
+    bool isAuthenticated = Context.User.Identity?.IsAuthenticated ?? false;
+    string? userName = isAuthenticated ? Context.User.Claims.First(c => c.Type == ClaimTypes.Name).Value : null;
+    string? userLetter = isAuthenticated ? userName![0].ToString() : null;
+    string? userTitle = isAuthenticated ? userName! : null;
+
 }
 
 <!DOCTYPE html>
@@ -67,12 +74,11 @@
                     @if (isAuthenticated)
                     {
                         <div class="d-flex gap-2 align-items-center">
-                            <div class="border border-2 border-warning rounded-circle d-flex align-items-center justify-content-center" 
-                            title="@userTitle"
-                            style="width: 35px; height: 35px"
-                            >
-                            @(userLetter!.ToUpper())
-                        </div>
+                            <a asp-controller="User" asp-action="Profile" class="border border-2 border-warning rounded-circle d-flex align-items-center justify-content-center nav-link"
+                               title="@userTitle"
+                               style="width: 35px; height: 35px">
+                                @(userLetter!.ToUpper())
+                            </a>
 
                             <a href="?logout"
                                class="btn btn-outline-secondary"
@@ -120,14 +126,14 @@
                             <input type="text" class="form-control "
                                    name="user-login" placeholder="Login"
                                    aria-label="Login" aria-describedby="login-addon"
-                                   value="user">
+                                   value="Admin">
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="user-password-addon"><i class="bi bi-lock"></i></span>
                             <input type="password" class="form-control "
                                    name="user-password" placeholder="Password"
                                    aria-label="Password" aria-describedby="user-password-addon"
-                                   value="user">
+                                   value="Admin">
                         </div>
                     </form>
                 </div>
