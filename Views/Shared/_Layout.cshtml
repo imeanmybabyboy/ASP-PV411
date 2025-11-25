@@ -1,4 +1,6 @@
-﻿@using ASP_PV411.Middleware
+﻿@model ASP_PV411.Models.User.UserProfileViewModel;
+
+@using ASP_PV411.Middleware
 @using System.Security.Claims
 @{
     // bool isAuthenticated = Context.Items.ContainsKey(AuthSessionMiddleware.SessionKey);
@@ -11,7 +13,6 @@
     string? userName = isAuthenticated ? Context.User.Claims.First(c => c.Type == ClaimTypes.Name).Value : null;
     string? userLetter = isAuthenticated ? userName![0].ToString() : null;
     string? userTitle = isAuthenticated ? userName! : null;
-
 }
 
 <!DOCTYPE html>
@@ -73,6 +74,12 @@
 
                     @if (isAuthenticated)
                     {
+                        <div class="nav-item">
+                            <a class="nav-link text-dark" title="Private info" asp-area="" asp-controller="User" asp-action="Private">
+                                Private page
+                            </a>
+                        </div>
+
                         <div class="d-flex gap-2 align-items-center">
                             <a asp-controller="User" asp-action="Profile" class="border border-2 border-warning rounded-circle d-flex align-items-center justify-content-center nav-link"
                                title="@userTitle"

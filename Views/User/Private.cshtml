@@ -1,0 +1,22 @@
+﻿@model ASP_PV411.Models.User.UserProfileViewModel;
+
+@{
+    ViewData["Title"] = "Profile";
+    bool isAuthenticated = Context.User.Identity?.IsAuthenticated ?? false;
+}
+<div class="text-center">
+    <h1 class="display-4">Приватна сторінка</h1>
+</div>
+
+@if (!isAuthenticated)
+{
+    <div class="alert alert-danger text-center">
+        Щоб переглядати приватний вміст сторінки потрібно ввійти в кабінет!
+    </div>
+}
+else
+{
+    <div>
+        Приватна інформація користувача @Model.User.Name
+    </div>
+}
