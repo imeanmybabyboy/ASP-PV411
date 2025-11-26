@@ -24,7 +24,7 @@ else
                         <th>Назва</th>
                         <th class="d-flex justify-content-between align-items-end">
                             Значення
-                            <button id="btn-profile-edit" title="Редагувати дані" type="button" class="btn btn-outline-warning">
+                            <button id="btn-profile-edit" title="Редагувати дані" type="button" class="btn btn-outline-warning shadow-none">
                                 <i class="bi bi-pencil"></i>
                             </button>
                         </th>
@@ -33,15 +33,19 @@ else
                 <tbody>
                     <tr>
                         <td>Ім'я</td>
-                        <td data-profile-editable>@Model.User.Name</td>
+                        <td data-profile-editable="Name">@Model.User.Name</td>
                     </tr>
                     <tr>
                         <td>E-mail</td>
-                        <td data-profile-editable>@Model.User.Email</td>
+                        <td data-profile-editable="Email">@Model.User.Email</td>
                     </tr>
                     <tr>
                         <td>Логін</td>
-                        <td data-profile-editable>@Model.User.Login</td>
+                        <td data-profile-editable="Login">@Model.User.Login</td>
+                    </tr>
+                    <tr style="display: none;" data-profile-hidden>
+                        <td>Пароль</td>
+                        <td data-profile-editable="Password"></td>
                     </tr>
 
                     @if (Model.User.Birthdate != null)

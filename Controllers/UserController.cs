@@ -2,22 +2,95 @@
 using ASP_PV411.Middleware;
 using ASP_PV411.Models.User;
 using ASP_PV411.Services.Kdf;
+using ASP_PV411.Services.Salt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace ASP_PV411.Controllers
 {
     public class UserController(
         DataContext dataContext,
-        IKdfService kdfService) : Controller
+        IKdfService kdfService,
+        ISaltService saltService
+        ) : Controller
     {
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> Update([FromBody] UserUpdateFormModel formModel)
+        {
+            // Перевіряємо наявність на правильність автентифікації
+            bool isAuthenticated = HttpContext.User.Identity?.IsAuthenticated ?? false;
+
+            if (!isAuthenticated)
+            {
+                return Unauthorized("No user in context");
+            }
+
+            string userId = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Sid).Value;
+            var user = dataContext.Users
+                .First(u => u.Id == Guid.Parse(userId))!;
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid user restoring from identity");
+            }
+
+            // Зберігаємо тип сутності (User)
+            Type userType = user.GetType();
+
+            // Перевіряємо, що хоча б одне з полів наявне (не всі null)
+
+            bool isAllNulls = true;
+
+            foreach (var prop in formModel.GetType().GetProperties())
+            {
+                object? val = prop.GetValue(formModel, null);
+
+                if (val != null)
+                {
+                    isAllNulls = false;
+
+                    if (prop.Name == "Password")
+                    {
+                        string salt = saltService.GetSalt();
+                        user.Salt = salt;
+                        user.Dk = kdfService.Dk(formModel.Password!, salt);
+                    }
+                    else
+                    {
+                        var userProp = userType.GetProperty(prop.Name);
+
+                        if (userProp != null)
+                        {
+                            userProp.SetValue(user, val); // а також переносимо усі ненульові значення до сутності (user)
+                        }
+                        else
+                        {
+                            return BadRequest($"Form property '{prop.Name}' not found in entity '{userType.Name}'");
+                        }
+                    }
+                }
+            }
+
+            if (isAllNulls)
+            {
+                return BadRequest("No data for update");
+            }
+            var saveTask = dataContext.SaveChangesAsync();
+
+            AuthSessionMiddleware.SaveAuth(HttpContext, user);
+            await saveTask;
+
+            return Accepted();
         }
 
         public IActionResult Private()

@@ -123,9 +123,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function btnProfileEditClick() {
     for (let item of document.querySelectorAll("[data-profile-editable]")) {
-        item.setAttribute("contentEditable", true)
+        item.setAttribute("contenteditable", true)
     }
 }
+
+function btnProfileEditClick(e) {
+    const btn = e.target.closest("button");
+
+    if (btn.isActived) {
+        btn.isActived = false;
+        btn.classList.remove("btn-outline-success");
+        btn.classList.add("btn-outline-warning");
+        let changes = {};
+
+        for (let item of document.querySelectorAll("[data-profile-editable]")) {
+            item.removeAttribute("contenteditable")
+            let currentText = item.innerText === "\n" ? '' : item.innerText;
+            if (item.initialText !== currentText) {
+                changes[item.getAttribute("data-profile-editable")] = item.innerText;
+            }
+            let tr = item.closest("[data-profile-hidden]");
+            if (tr) {
+                tr.style.display = "none";
+            }
+        }
+
+        if (Object.keys(changes).length > 0) {
+            console.log(changes);
+            fetch("/user/update", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(changes)
+            })
+                .then(r => {
+                    if (r.status === 202) {
+                        window.location.reload();
+                    }
+                    else {
+                        r.text().then(alert);
+                    }
+                });
+        }
+    }
+    else {
+        btn.isActived = true;
+        btn.classList.remove("btn-outline-warning")
+        btn.classList.add("btn-outline-success");
+        for (let item of document.querySelectorAll("[data-profile-editable]")) {
+            item.setAttribute("contenteditable", true)
+            item.initialText = item.innerText;
+
+            let tr = item.closest("[data-profile-hidden]");
+            if (tr) {
+                tr.style.display = "table-row";
+            }
+        }
+    }
+}
+
 
 /*
 Base64
