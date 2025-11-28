@@ -17,6 +17,41 @@
 document.addEventListener("submit", (e) => {
     const form = e.target;
 
+    if (form && form["id"] === "signup-form") {
+        e.preventDefault();                        // Перехоплення надсилання форми та переведення 
+                                                   // його до асинхронної форми (AJAX)
+        fetch("/User/Register", {                  //
+            method: "POST",                        //
+            body: new FormData(form)               //
+        }).then(r => {                             //
+            return r.json();
+        }).then(j => {
+            if (j.status === "Ok") {
+                alert("Вітаємо з успішною реєстрацією");
+            }
+            else {
+                for (let elem of form.querySelectorAll("input")) {
+                        elem.classList.remove("is-invalid");
+
+                }
+
+                for (let name in j['errors']) {
+                    let input = form.querySelector(`[name="${name}"]`);
+                    if (input) {
+                        input.classList.add("is-invalid");
+                        let fb = form.querySelector(`[name=${name}]+.invalid-feedback`);
+                        if (fb) {
+                            fb.innerText = j['errors'][name];
+                        }
+                    } 
+                    else {
+                        console.error(`input name = '${name}' not found`)
+                    }
+                }
+            }
+        })
+    }
+
     if (form && form["id"] == "auth-form") {
         e.preventDefault();
         const formData = new FormData(form);

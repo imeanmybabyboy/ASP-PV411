@@ -12,7 +12,7 @@
         public string Dk { get; set; } = null!;
         public DateTime RegisterAt { get; set; }
         public DateTime? DeleteAt { get; set; }
-
+        
         public UserRole Role { get; set; } = null!;
     }
 }

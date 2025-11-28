@@ -24,6 +24,39 @@ namespace ASP_PV411.Controllers
             return View();
         }
 
+        public ViewResult SignUp()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Register(UserRegisterFormModel formModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                Dictionary<string, string> errors = [];
+                foreach (var kv in ModelState)
+                {
+                    string errorMessage = string.Join(", ",
+                        kv.Value.Errors.Select(e => e.ErrorMessage));
+
+                    if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        errors[kv.Key] = errorMessage;
+                    }
+                }
+
+
+                return Json(new
+                {
+                    Status = "Error",
+                    Errors = errors
+                });
+            }
+
+            return Json(new { Status = "OK" });
+        }
+
         [HttpPatch]
         public async Task<IActionResult> Update([FromBody] UserUpdateFormModel formModel)
         {
