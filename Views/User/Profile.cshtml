@@ -47,15 +47,12 @@ else
                         <td>Пароль</td>
                         <td data-profile-editable="Password"></td>
                     </tr>
-
-                    @if (Model.User.Birthdate != null)
-                    {
-                        <tr>
-                            <td>Дата народження</td>
-                            <td>@Model.User.Birthdate.Value.ToString("dd.MM.yyyy")</td>
-                        </tr>
-
-                    }
+                    <tr style="@(Model.User.Birthdate != null ? "display: flex-row" : "display: none")" data-profile-hidden>
+                        <td>Дата народження <br /> Див. <a target="_blank" href="https://forum.knime.com/t/writing-a-flexible-date-format-handling-workflow/32165">формати часу</a> </td>
+                        <td data-profile-editable="Birthdate">
+                            @Model.User.Birthdate
+                        </td>
+                    </tr>
 
                     <tr>
                         <td>Дата реєстрації</td>

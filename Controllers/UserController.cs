@@ -98,6 +98,31 @@ namespace ASP_PV411.Controllers
                         user.Salt = salt;
                         user.Dk = kdfService.Dk(formModel.Password!, salt);
                     }
+                    else if (prop.Name == "Birthdate")
+                    {
+                        var userProp = userType.GetProperty(prop.Name);
+                        if (userProp != null)
+                        {
+                            var cleanedBirthdate = formModel.Birthdate?.Trim().Replace("\n", "").Replace("\r", "");
+
+                            if (string.IsNullOrWhiteSpace(cleanedBirthdate))
+                            {
+                                userProp.SetValue(user, null);
+                            }
+                            else if (DateOnly.TryParse(cleanedBirthdate, out var date))
+                            { 
+                                userProp.SetValue(user, date);
+                            }
+                            else
+                            {
+                                return BadRequest($"Date format ({formModel.Birthdate}) is invalid!");
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest($"Form property '{prop.Name}' not found in entity '{userType.Name}'");
+                        }
+                    }
                     else
                     {
                         var userProp = userType.GetProperty(prop.Name);

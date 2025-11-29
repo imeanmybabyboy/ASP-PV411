@@ -173,7 +173,7 @@ function btnProfileEditClick(e) {
 
         for (let item of document.querySelectorAll("[data-profile-editable]")) {
             item.removeAttribute("contenteditable")
-            let currentText = item.innerText === "\n" ? '' : item.innerText;
+            let currentText = item.innerText.replace(/(\r\n|\n|\r)/gm, "").trim();
             if (item.initialText !== currentText) {
                 changes[item.getAttribute("data-profile-editable")] = item.innerText;
             }
@@ -184,7 +184,6 @@ function btnProfileEditClick(e) {
         }
 
         if (Object.keys(changes).length > 0) {
-            console.log(changes);
             fetch("/user/update", {
                 method: "PATCH",
                 headers: {
