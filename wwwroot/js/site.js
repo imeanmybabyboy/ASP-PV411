@@ -19,7 +19,7 @@ document.addEventListener("submit", (e) => {
 
     if (form && form["id"] === "signup-form") {
         e.preventDefault();                        // Перехоплення надсилання форми та переведення 
-                                                   // його до асинхронної форми (AJAX)
+        // його до асинхронної форми (AJAX)
         fetch("/User/Register", {                  //
             method: "POST",                        //
             body: new FormData(form)               //
@@ -31,8 +31,8 @@ document.addEventListener("submit", (e) => {
             }
             else {
                 for (let elem of form.querySelectorAll("input")) {
-                        elem.classList.remove("is-invalid");
-
+                    elem.classList.remove("is-invalid");
+                    elem.classList.add("is-valid")
                 }
 
                 for (let name in j['errors']) {
@@ -43,7 +43,7 @@ document.addEventListener("submit", (e) => {
                         if (fb) {
                             fb.innerText = j['errors'][name];
                         }
-                    } 
+                    }
                     else {
                         console.error(`input name = '${name}' not found`)
                     }

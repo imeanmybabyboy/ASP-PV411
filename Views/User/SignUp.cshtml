@@ -21,9 +21,7 @@
                        aria-label="Username"
                        aria-describedby="username-addon">
 
-                <div class="invalid-feedback">
-                    Необхідне поле
-                </div>
+                <div class="invalid-feedback"></div>
             </div>
         </div>
         <div class="col">
@@ -39,6 +37,8 @@
                        placeholder="E-mail"
                        aria-label="E-mail"
                        aria-describedby="user-email-addon">
+
+                <div class="invalid-feedback"></div>
             </div>
         </div>
     </div>
@@ -56,6 +56,8 @@
                        placeholder="Login"
                        aria-label="Login"
                        aria-describedby="user-login-addon">
+
+                <div class="invalid-feedback"></div>
             </div>
         </div>
 
@@ -74,6 +76,8 @@
                        placeholder="Password"
                        aria-label="Password"
                        aria-describedby="user-password-addon">
+
+                <div class="invalid-feedback"></div>
             </div>
         </div>
     </div>
@@ -95,6 +99,7 @@
                        aria-label="Phone number"
                        aria-describedby="user-phone-number-addon"
                        placeholder="Phone number">
+                <div class="invalid-feedback"></div>
             </div>
         </div>
 
@@ -114,6 +119,8 @@
                            class="form-control "
                            aria-label="Date of birth"
                            aria-describedby="user-birthdate-addon" />
+
+                    <div class="invalid-feedback"></div>
                 </div>
             </div>
         </div>
@@ -128,6 +135,8 @@
                            id="checkDefault"
                            name="agreement"
                            value="true">
+                    <div class="invalid-feedback"></div>
+
                     <label class="form-check-label" for="checkDefault">
                         Погоджуюсь з <a asp-controller="Home" asp-action="Privacy">правилами сайту</a>
                     </label>

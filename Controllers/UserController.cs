@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ASP_PV411.Controllers
@@ -32,6 +33,62 @@ namespace ASP_PV411.Controllers
         [HttpPost]
         public JsonResult Register(UserRegisterFormModel formModel)
         {
+            // валідація паролю
+            if (!string.IsNullOrEmpty(formModel.UserPassword))
+            {
+                if (!Regex.IsMatch(formModel.UserPassword, @"\d"))
+                {
+                    ModelState.AddModelError("user-password", "Пароль повинен містити принаймні одну цифру");
+                }
+                else if (!Regex.IsMatch(formModel.UserPassword, @"\W"))
+                {
+                    ModelState.AddModelError("user-password", "Пароль повинен містити принаймні один спецсимвол");
+                }
+                else if (!Regex.IsMatch(formModel.UserPassword, @"[a-z]"))
+                {
+                    ModelState.AddModelError("user-password", "Пароль повинен містити принаймні одну малу літеру");
+                }
+                else if (!Regex.IsMatch(formModel.UserPassword, @"[A-Z]"))
+                {
+                    ModelState.AddModelError("user-password", "Пароль повинен містити принаймні одну велику літеру");
+                }
+            }
+
+            // валідація e-mail
+            if (!string.IsNullOrEmpty(formModel.UserEmail))
+            {
+                if (!Regex.IsMatch(formModel.UserEmail, @"([\w]+)@([\w]+).com"))
+                {
+                    ModelState.AddModelError("user-email", "Пароль має бути створений за патерном: johnDoe@example.com");
+                }
+            }
+
+            // Валідація паролю
+            if (!string.IsNullOrEmpty(formModel.UserPhoneNumber))
+            {
+                if (!Regex.IsMatch(formModel.UserPhoneNumber, @"\+380+"))
+                {
+                    ModelState.AddModelError("user-phone-number", @"Номер телефону повинен починатися з '+380'");
+                }
+                else if (formModel.UserPhoneNumber.Length != 13)
+                {
+                    ModelState.AddModelError("user-phone-number", @"Довжина номера телефону має становити 9 символів після +380");
+                }
+                else if (!Regex.IsMatch(formModel.UserPhoneNumber, @"^\+?[0-9]+$"))
+                {
+                    ModelState.AddModelError("user-phone-number", @"Номер телефону повинен містити лише цифри");
+                }
+            }
+
+            // Валідація дати народження
+            if (formModel!.UserBirthdate != null)
+            {
+                if (DateOnly.FromDateTime(DateTime.Today).DayNumber - formModel.UserBirthdate?.DayNumber < 16 * 365)
+                {
+                    ModelState.AddModelError("user-birthdate", "Самостійна реєстрація дозволена з 16 років!");
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 Dictionary<string, string> errors = [];
