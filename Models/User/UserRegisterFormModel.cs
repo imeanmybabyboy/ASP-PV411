@@ -36,7 +36,7 @@ namespace ASP_PV411.Models.User
 
         [FromForm(Name = "user-phone-number")]
         [Required(ErrorMessage = "Необхідно зазначити номер телефону")]
-        public string UserPhoneNumber { get; set; } = null!;
+        public string UserPhone { get; set; } = null!;
 
     }
 }

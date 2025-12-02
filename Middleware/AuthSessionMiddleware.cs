@@ -67,6 +67,11 @@ namespace ASP_PV411.Middleware
         {
             context.Session.SetString(AuthSessionMiddleware.SessionKey, JsonSerializer.Serialize(user));
         }
+        
+        public static void Logout(HttpContext context)
+        {
+            context.Session.Remove(AuthSessionMiddleware.SessionKey);
+        }
     }
 
     public static class AuthSessionMiddlewareExtensions

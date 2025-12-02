@@ -154,12 +154,35 @@ document.addEventListener("submit", (e) => {
 document.addEventListener("DOMContentLoaded", () => {
     let btn = document.getElementById("btn-profile-edit");
     if (btn) btn.addEventListener('click', btnProfileEditClick)
+
+    btn = document.getElementById("btn-profile-delete");
+    if (btn) btn.addEventListener('click', btnProfileDeleteClick)
 })
+
+function btnProfileDeleteClick() {
+    if (confirm("Ви збираєтеся закрити профіль. Уся персональна інформація буде видалена і не підлягатиме відновленню. Підтверджуєте?")) {
+        fetch("/User/Erase", {
+            method: "DELETE"
+        }).then(r => {
+            if (r.ok) {
+                alert("Ваш профіль видалено.");
+                window.location = "/"
+            }
+            else {
+                alert("Виникла помилка, повторіть спробу пізніше.");
+            }
+        })
+    }
+}
 
 function btnProfileEditClick() {
     for (let item of document.querySelectorAll("[data-profile-editable]")) {
         item.setAttribute("contenteditable", true)
     }
+}
+
+function normalize(text) {
+    return text.replace(/(\r\n|\n|\r)/gm, "").trim();
 }
 
 function btnProfileEditClick(e) {
@@ -173,13 +196,20 @@ function btnProfileEditClick(e) {
 
         for (let item of document.querySelectorAll("[data-profile-editable]")) {
             item.removeAttribute("contenteditable")
-            let currentText = item.innerText.replace(/(\r\n|\n|\r)/gm, "").trim();
-            if (item.initialText !== currentText) {
-                changes[item.getAttribute("data-profile-editable")] = item.innerText;
+            let oldText = normalize(item.initialText);
+            let newText = normalize(item.innerText);
+
+            if (oldText !== newText) {
+                changes[item.getAttribute("data-profile-editable")] = newText;
             }
             let tr = item.closest("[data-profile-hidden]");
             if (tr) {
-                tr.style.display = "none";
+                if (newText !== "") {
+                    tr.style.display = "table-row";
+                }
+                else {
+                    tr.style.display = "none";
+                }
             }
         }
 

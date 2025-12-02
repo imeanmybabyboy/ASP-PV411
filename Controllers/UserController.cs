@@ -3,6 +3,7 @@ using ASP_PV411.Middleware;
 using ASP_PV411.Models.User;
 using ASP_PV411.Services.Kdf;
 using ASP_PV411.Services.Salt;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -23,6 +24,54 @@ namespace ASP_PV411.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpDelete]
+        public async Task<JsonResult> Erase()
+        {
+            bool isAuthenticated = HttpContext.User.Identity?.IsAuthenticated ?? false;
+
+            if (isAuthenticated)
+            {
+                string userId = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Sid).Value;
+                var user = dataContext.
+                    Users
+                    .First(u => u.Id == Guid.Parse(userId));
+
+                //foreach (var prop in user.GetType().GetProperties())
+                //{
+                //    if (prop.GetCustomAttribute<PersonalDataAttribute>() != null)
+                //    {
+                //        if (prop.GetType().IsAbstract)
+                //        {
+
+                //        }
+                //    }
+                //}
+
+                user.Name = user.Email = user.Phone = "";
+                user.Birthdate = null;
+                user.DeleteAt = DateTime.Now;
+                var saveTask = dataContext.SaveChangesAsync();
+
+                AuthSessionMiddleware.Logout(HttpContext);
+
+                await saveTask;
+
+                return Json(new { Status = "Ok" });
+            }
+            else
+            {
+                Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Json(new
+                {
+                    Status = "Error",
+                    Error = new Dictionary<string, string>()
+                    {
+                        {"auth", "User not authorized"}
+                    }
+                });
+            }
         }
 
         public ViewResult SignUp()
@@ -64,17 +113,17 @@ namespace ASP_PV411.Controllers
             }
 
             // Валідація паролю
-            if (!string.IsNullOrEmpty(formModel.UserPhoneNumber))
+            if (!string.IsNullOrEmpty(formModel.UserPhone))
             {
-                if (!Regex.IsMatch(formModel.UserPhoneNumber, @"\+380+"))
+                if (!Regex.IsMatch(formModel.UserPhone, @"\+380+"))
                 {
                     ModelState.AddModelError("user-phone-number", @"Номер телефону повинен починатися з '+380'");
                 }
-                else if (formModel.UserPhoneNumber.Length != 13)
+                else if (formModel.UserPhone.Length != 13)
                 {
                     ModelState.AddModelError("user-phone-number", @"Довжина номера телефону має становити 9 символів після +380");
                 }
-                else if (!Regex.IsMatch(formModel.UserPhoneNumber, @"^\+?[0-9]+$"))
+                else if (!Regex.IsMatch(formModel.UserPhone, @"^\+?[0-9]+$"))
                 {
                     ModelState.AddModelError("user-phone-number", @"Номер телефону повинен містити лише цифри");
                 }
@@ -111,7 +160,35 @@ namespace ASP_PV411.Controllers
                 });
             }
 
-            return Json(new { Status = "OK" });
+            if (dataContext.Users.Any(u => u.Login == formModel.UserLogin))
+            {
+                return Json(new
+                {
+                    Status = "Error",
+                    Errors = new Dictionary<string, string>()
+                    {
+                        { "user-login", "Login in use" }
+                    }
+                });
+            }
+
+            string salt = saltService.GetSalt();
+            dataContext.Users.Add(new()
+            {
+                Id = Guid.NewGuid(),
+                Name = formModel.UserName,
+                Email = formModel.UserEmail,
+                Phone = formModel.UserPhone,
+                Login = formModel.UserLogin,
+                Salt = salt,
+                Dk = kdfService.Dk(formModel.UserPassword, salt),
+                Birthdate = formModel.UserBirthdate,
+                RegisterAt = DateTime.Now,
+                RoleId = "User",
+            });
+            dataContext.SaveChanges();
+
+            return Json(new { Status = "Ok" });
         }
 
         [HttpPatch]
@@ -167,17 +244,47 @@ namespace ASP_PV411.Controllers
                                 userProp.SetValue(user, null);
                             }
                             else if (DateOnly.TryParse(cleanedBirthdate, out var date))
-                            { 
+                            {
                                 userProp.SetValue(user, date);
                             }
                             else
                             {
-                                return BadRequest($"Date format ({formModel.Birthdate}) is invalid!");
+                                return BadRequest($"Неправильний формат дати народження:({formModel.Birthdate})!");
                             }
                         }
                         else
                         {
                             return BadRequest($"Form property '{prop.Name}' not found in entity '{userType.Name}'");
+                        }
+                    }
+                    else if (prop.Name == "Phone")
+                    {
+                        var userProp = userType.GetProperty(prop.Name);
+                        if (userProp != null)
+                        {
+                            if (!Regex.IsMatch(formModel.Phone!, @"\+380+") && formModel.Phone != "")
+                            {
+                                return BadRequest($"Номер телефону повинен починатися з '+380'");
+                            }
+                            else if (!Regex.IsMatch(formModel.Phone!, @"^\+?[0-9]+$") && formModel.Phone != "")
+                            {
+                                return BadRequest($"Номер телефону повинен містити лише цифри");
+                            }
+                            else if (formModel.Phone!.Length != 13 && formModel.Phone != "")
+                            {
+                                return BadRequest($"Довжина номера телефону має становити 9 символів після +380");
+                            }
+                            else
+                            {
+                                if (formModel.Phone == "")
+                                {
+                                    userProp.SetValue(user, null);
+                                }
+                                else
+                                {
+                                    userProp.SetValue(user, val);
+                                }
+                            }
                         }
                     }
                     else
@@ -203,6 +310,7 @@ namespace ASP_PV411.Controllers
             var saveTask = dataContext.SaveChangesAsync();
 
             AuthSessionMiddleware.SaveAuth(HttpContext, user);
+
             await saveTask;
 
             return Accepted();
@@ -231,7 +339,7 @@ namespace ASP_PV411.Controllers
             if (isAuthenticated)
             {
                 string userId = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Sid).Value;
-                var user = dataContext.Users.Include(u => u.Role).First(u => u.Id == Guid.Parse(userId))!;
+                var user = dataContext.Users.Include(u => u.Role).First(u => u.Id == Guid.Parse(userId) && u.DeleteAt == null)!;
                 return View(new UserProfileViewModel() { User = user, IsPersonal = true });
             }
             else
@@ -300,7 +408,7 @@ namespace ASP_PV411.Controllers
             string password = parts[1];
 
             // Шукаємо у базі даних користувача за логіном 
-            var user = dataContext.Users.FirstOrDefault(u => u.Login == login);
+            var user = dataContext.Users.FirstOrDefault(u => u.Login == login && u.DeleteAt == null);
             if (user == null)
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
