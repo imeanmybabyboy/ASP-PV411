@@ -52,11 +52,10 @@ namespace ASP_PV411.Middleware
                                                                             // походження Claims
                         new Claim(ClaimTypes.NameIdentifier,                //
                                     user.Login),                            // Технічно, користувач може мати
-                        new Claim(ClaimTypes.Sid, user.Id.ToString())       // декілька Identity різного
-                            ],                                              // походження
-                            nameof(AuthSessionMiddleware)                   //
-                        )
-                    );
+                        new Claim(ClaimTypes.Sid, user.Id.ToString()),      // декілька Identity різного
+                        new Claim(ClaimTypes.Role, user.RoleId)             // походження
+                    ],                                              
+                        nameof(AuthSessionMiddleware)));
             }
 
             // Call the next delegate/middleware in the pipeline.
@@ -67,7 +66,7 @@ namespace ASP_PV411.Middleware
         {
             context.Session.SetString(AuthSessionMiddleware.SessionKey, JsonSerializer.Serialize(user));
         }
-        
+
         public static void Logout(HttpContext context)
         {
             context.Session.Remove(AuthSessionMiddleware.SessionKey);

@@ -1,5 +1,6 @@
 ﻿using ASP_PV411.Data;
 using ASP_PV411.Middleware;
+using ASP_PV411.Services.FileExtensionChecker;
 using ASP_PV411.Services.FolderName;
 using ASP_PV411.Services.Hash;
 using ASP_PV411.Services.Kdf;
@@ -7,6 +8,7 @@ using ASP_PV411.Services.OTP;
 using ASP_PV411.Services.Random;
 using ASP_PV411.Services.Salt;
 using ASP_PV411.Services.Signature;
+using ASP_PV411.Services.Storage;
 using ASP_PV411.Services.Timestamp;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +28,8 @@ builder.Services.AddKdf();
 builder.Services.AddSignature();
 builder.Services.AddOtp();
 builder.Services.AddFolderName();
+builder.Services.AddStorage();
+builder.Services.AddChecker();
 
 
 // сесії - як інструмент збереження даних між запитами

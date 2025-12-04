@@ -13,6 +13,10 @@
     string? userName = isAuthenticated ? Context.User.Claims.First(c => c.Type == ClaimTypes.Name).Value : null;
     string? userLetter = isAuthenticated ? userName![0].ToString() : null;
     string? userTitle = isAuthenticated ? userName! : null;
+    string? roleId = isAuthenticated
+                ? Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value
+                : null;
+
 }
 
 <!DOCTYPE html>
@@ -70,10 +74,26 @@
                                 <i class="bi bi-arrow-bar-right"></i>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Storage">
+                                <i class="bi bi-file-earmark-arrow-up"></i>
+                            </a>
+                        </li>
+
                     </ul>
 
                     @if (isAuthenticated)
                     {
+                        if (roleId == "Admin")
+                        {
+                            <a class="nav-link p-2"
+                               title="Admin panel"
+                               asp-controller="Admin"
+                               asp-action="Index">
+                                <i class="bi bi-speedometer2"></i>
+                            </a>
+                        }
+
                         <div class="nav-item">
                             <a class="nav-link text-dark" title="Private info" asp-area="" asp-controller="User" asp-action="Private">
                                 Private page

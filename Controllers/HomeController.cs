@@ -7,6 +7,7 @@ using ASP_PV411.Services.OTP;
 using ASP_PV411.Services.Random;
 using ASP_PV411.Services.Salt;
 using ASP_PV411.Services.Signature;
+using ASP_PV411.Services.Storage;
 using ASP_PV411.Services.Timestamp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -28,8 +29,9 @@ namespace ASP_PV411.Controllers
         private readonly ISignatureService _signatureService;
         private readonly IOtpService _otpService;
         private readonly IFolderNameService _folderNameService;
+        private readonly IStorageService _storageService;
 
-        public HomeController(ILogger<HomeController> logger, IRandomService randomService, ITimestampService timestampService, IHashService hashService, ISaltService saltService, IKdfService kdfService, ISignatureService signatureService, IOtpService otpService, IFolderNameService folderNameService)
+        public HomeController(ILogger<HomeController> logger, IRandomService randomService, ITimestampService timestampService, IHashService hashService, ISaltService saltService, IKdfService kdfService, ISignatureService signatureService, IOtpService otpService, IFolderNameService folderNameService, IStorageService storageService)
         {
             _logger = logger;
             _randomService = randomService;
@@ -40,10 +42,29 @@ namespace ASP_PV411.Controllers
             _signatureService = signatureService;
             _otpService = otpService;
             _folderNameService = folderNameService;
+            _storageService = storageService;
         }
 
         public IActionResult Index()
         {
+            return View();
+        }
+
+        public IActionResult Storage(HomeStorageFormModel? formModel)
+        {
+            if (Request.Method == "POST")
+            {
+                try
+                {
+                    string name = _storageService.Save(formModel.FormFile);
+                    ViewData["result"] = $"File saved: {name}";
+                }
+                catch (Exception ex)
+                {
+                    ViewData["result"] = ex.Message;
+                }
+            }
+
             return View();
         }
 

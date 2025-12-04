@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Storage";
+}
+<div class="text-center">
+    <h1 class="display-4">
+        Завантаження та збереження файлів
+    </h1>
+</div>
+<p>
+    Збереження файлів - окрема задача, що реалізується у вигляді сервісу.
+    Розрізняють завантаження файлів (uploading) - передачу від клієнта до сервера, та вивантаження (downloading) - передачу від сервера до клієнта.
+</p>
+<p>
+    Не будь-яка форма буде передавати файл, навіть якщо на неї розмістити відповідий елемент (input). <br />
+    Вимоги до форм, що передають файли:
+</p>
+<ul>
+    <li>Метод форми - POST</li>
+    <li>Тип форми (enctype) - "multipart/form-data"</li>
+    <li>Модель форми приймає елемент типу IFormFile</li>
+    <li></li>
+</ul>
+
+@ViewData["result"];
+
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="form-file"/>
+    <button type="submit">Завантажити</button>
+</form>
+
+<img src="/Storage/Item/c75c6bae-bfff-4897-bcc5-db67341d4d20.jpeg" alt="Storage/Item" />
