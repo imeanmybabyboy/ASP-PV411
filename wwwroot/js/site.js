@@ -149,7 +149,76 @@ document.addEventListener("submit", (e) => {
             }
         })
     }
+
+    if (form && form["id"] == "admin-group-form") {
+        e.preventDefault();
+        adminGroupFormSubmitted(form);
+    }
+
+    if (form && form["id"] == "admin-manufacturer-form") {
+        e.preventDefault();
+        adminManufacturerFormSubmitted(form);
+    }
+
+    if (form && form["id"] == "admin-product-form") {
+        e.preventDefault();
+        adminProductFormSubmitted(form);
+    }
 })
+
+function adminGroupFormSubmitted(form) {
+    fetch("/Admin/AddGroup", {                 
+        method: "POST",                        
+        body: new FormData(form)               
+    }).then(r => {                             
+        return r.json();
+    }).then(j => {
+        console.log(j);
+        if (j.status === "Ok") {
+            alert("Додано успішно");
+            form.reset();
+        }
+        else {
+            alert(JSON.stringify(j.errors, null, 2));
+        }
+    })
+}
+
+function adminManufacturerFormSubmitted(form) {
+    fetch("/Admin/AddManufacturer", {                 
+        method: "POST",                        
+        body: new FormData(form)               
+    }).then(r => {                             
+        return r.json();
+    }).then(j => {
+        console.log(j);
+        if (j.status === "Ok") {
+            alert("Додано успішно");
+            form.reset();
+        }
+        else {
+            alert(JSON.stringify(j.errors, null, 2));
+        }
+    })
+}
+
+function adminProductFormSubmitted(form) {
+    fetch("/Admin/AddProduct", {
+        method: "POST",
+        body: new FormData(form)
+    }).then(r => {
+        return r.json();
+    }).then(j => {
+        console.log(j);
+        if (j.status === "Ok") {
+            alert("Додано успішно");
+            form.reset();
+        }
+        else {
+            alert(JSON.stringify(j.errors, null, 2));
+        }
+    })
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     let btn = document.getElementById("btn-profile-edit");

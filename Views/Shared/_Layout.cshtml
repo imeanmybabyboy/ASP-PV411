@@ -1,6 +1,4 @@
-﻿@model ASP_PV411.Models.User.UserProfileViewModel;
-
-@using ASP_PV411.Middleware
+﻿@using ASP_PV411.Middleware
 @using System.Security.Claims
 @{
     // bool isAuthenticated = Context.Items.ContainsKey(AuthSessionMiddleware.SessionKey);
@@ -16,7 +14,6 @@
     string? roleId = isAuthenticated
                 ? Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value
                 : null;
-
 }
 
 <!DOCTYPE html>

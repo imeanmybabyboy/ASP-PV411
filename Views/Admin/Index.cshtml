@@ -1,6 +1,145 @@
-﻿@{
+﻿@model ASP_PV411.Models.Admin.AdminIndexViewModel
+
+@{
     ViewData["Title"] = "Admin";
 }
 <div class="text-center">
     <h1 class="display-4">Панель адміністратора</h1>
+</div>
+
+<h2 class="display-5">Новий товар</h2>
+<div class="border m-3 p-3">
+    <form method="post" enctype="multipart/form-data" id="admin-product-form">
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-product-name" class="form-label">Назва</label>
+                    <input type="text" class="form-control" id="admin-product-name" placeholder="Назва товару"
+                           name="admin-product-name">
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-product-image" class="form-label">Зображення товару</label>
+                    <input name="admin-product-image" class="form-control" type="file" id="admin-product-image">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-product-price" class="form-label">Ціна</label>
+                    <input type="number" step="0.01" min="0" class="form-control" id="admin-product-price" placeholder="Ціна товару"
+                           name="admin-product-price">
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-product-stock" class="form-label">Кількість</label>
+                    <input type="number" step="1" min="0" class="form-control" id="admin-product-stock" placeholder="Кількість товару"
+                           name="admin-product-stock">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-product-group" class="form-label">Товарна група</label>
+                    <select class="form-select" id="admin-product-group" aria-label="Товарна група" name="admin-product-group">
+                        @foreach (var item in Model.Groups)
+                            {
+                            <option value="@item.Id">@item.Name</option>
+                            }
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-product-manufacturer" class="form-label">Виробник</label>
+                    <select class="form-select" id="admin-product-manufacturer" aria-label="Виробник" name="admin-product-manufacturer">
+                        @foreach (var item in Model.Manufacturers)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="mb-3">
+                <label for="admin-product-description" class="form-label">Опис товару</label>
+                <textarea class="form-control" id="admin-product-description" rows="3" name="admin-product-description"></textarea>
+            </div>
+        </div>
+
+        <button class="btn btn-primary shadow-none" type="submit">Додати</button>
+
+    </form>
+</div>
+
+
+<h2 class="display-5">Нова товарна група</h2>
+<div class="border m-3 p-3">
+    <form method="post" enctype="multipart/form-data" id="admin-group-form">
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-group-name" class="form-label">Назва</label>
+                    <input type="text" class="form-control" id="admin-group-name" placeholder="Назва товарної групи"
+                           name="admin-group-name">
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-group-image" class="form-label">Зображення для товарної групи</label>
+                    <input name="admin-group-image" class="form-control" type="file" id="admin-group-image">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="mb-3">
+                <label for="admin-group-description" class="form-label">Опис товарної групи</label>
+                <textarea class="form-control" id="admin-group-description" rows="3" name="admin-group-description"></textarea>
+            </div>
+        </div>
+
+        <button class="btn btn-primary shadow-none" type="submit">Додати</button>
+
+    </form>
+</div>
+
+
+<h2 class="display-5">Новий виробник</h2>
+<div class="border m-3 p-3">
+    <form method="post" enctype="multipart/form-data" id="admin-manufacturer-form">
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-manufacturer-name" class="form-label">Назва виробника</label>
+                    <input type="text" class="form-control" id="admin-manufacturer-name" placeholder="Назва товарної групи"
+                           name="admin-manufacturer-name">
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <label for="admin-manufacturer-image" class="form-label">Логотип виробника</label>
+                    <input name="admin-manufacturer-image" class="form-control" type="file" id="admin-manufacturer-image">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="mb-3">
+                <label for="admin-manufacturer-description" class="form-label">Опис виробника</label>
+                <textarea class="form-control" id="admin-manufacturer-description" rows="3" name="admin-manufacturer-description"></textarea>
+            </div>
+        </div>
+
+        <button class="btn btn-primary shadow-none" type="submit">Додати</button>
+
+    </form>
 </div>
