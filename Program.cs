@@ -11,6 +11,11 @@ using ASP_PV411.Services.Signature;
 using ASP_PV411.Services.Storage;
 using ASP_PV411.Services.Timestamp;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+
+var defaultCulture = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
+CultureInfo.DefaultThreadCurrentUICulture = defaultCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 

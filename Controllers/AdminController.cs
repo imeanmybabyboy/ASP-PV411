@@ -31,25 +31,36 @@ namespace ASP_PV411.Controllers
 
         public JsonResult AddManufacturer(AdminManufacturerFormModel formModel)
         {
-            if (ModelState.IsValid)
+            string? savedName = null!;
+            
+            if (!(formModel.Image == null))
             {
-                string savedName;
                 try
                 {
                     savedName = storageService.Save(formModel.Image);
                 }
                 catch (Exception ex)
                 {
-                    return Json(new
-                    {
-                        status = "Error",
-                        errors = new Dictionary<string, string>
-                        {
-                            { "admin-manufacturer-image", ex.Message }
-                        },
-                    });
+                    ModelState.AddModelError("admin-manufacturer-image", ex.Message);
                 }
+            }
+            else
+            {
+                ModelState.AddModelError("admin-manufacturer-image", "Необхідно додати логотип виробника");
+            }
 
+            if (string.IsNullOrEmpty(formModel.Name))
+            {
+                ModelState.AddModelError("admin-manufacturer-name", "Необхідно вказати назву виробника");
+            }
+            
+            if (string.IsNullOrEmpty(formModel.Description))
+            {
+                ModelState.AddModelError("admin-manufacturer-description", "Необхідно вказати опис виробника");
+            }
+
+            if (ModelState.IsValid)
+            {
                 Data.Entities.Manufacturer item = new()
                 {
                     Id = Guid.NewGuid(),
@@ -95,25 +106,36 @@ namespace ASP_PV411.Controllers
 
         public JsonResult AddGroup(AdminGroupFormModel formModel)
         {
-            if (ModelState.IsValid)
+            string? savedName = null!;
+
+            if (!(formModel.Image == null))
             {
-                string savedName;
                 try
                 {
                     savedName = storageService.Save(formModel.Image);
                 }
                 catch (Exception ex)
                 {
-                    return Json(new
-                    {
-                        status = "Error",
-                        errors = new Dictionary<string, string>
-                        {
-                            { "admin-group-image", ex.Message }
-                        },
-                    });
+                    ModelState.AddModelError("admin-group-image", ex.Message);
                 }
+            }
+            else
+            {
+                ModelState.AddModelError("admin-group-image", "Необхідно додати логотип товарної групи");
+            }
 
+            if (string.IsNullOrEmpty(formModel.Name))
+            {
+                ModelState.AddModelError("admin-group-name", "Необхідно вказати назву товарної групи");
+            }
+
+            if (string.IsNullOrEmpty(formModel.Description))
+            {
+                ModelState.AddModelError("admin-group-description", "Необхідно вказати опис товарної групи");
+            }
+
+            if (ModelState.IsValid)
+            {
                 Data.Entities.Group item = new()
                 {
                     Id = Guid.NewGuid(),
@@ -159,10 +181,61 @@ namespace ASP_PV411.Controllers
 
         public JsonResult AddProduct(AdminProductFormModel formModel)
         {
+            string? savedName = null!;
+            Guid groupId = Guid.Empty;
+            Guid manufacturerId = Guid.Empty;
+
+            // валідація виробника
+            try
+            {
+                manufacturerId = Guid.Parse(formModel.ManufacturerId);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("admin-product-manufacturer", "Невідомий виробник");
+            }
+
+            // валідація товарної групи
+            try
+            {
+                groupId = Guid.Parse(formModel.GroupId);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("admin-product-group", "Невідома товарна група");
+            }
+
+            // Валідація картинки
+            if (!(formModel.Image == null))
+            {
+                try
+                {
+                    savedName = storageService.Save(formModel.Image);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("admin-product-image", ex.Message);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("admin-product-image", "Необхідно додати картинку до товару");
+            }
+
+            // Валідація назви
+            if (string.IsNullOrEmpty(formModel.Name))
+            {
+                ModelState.AddModelError("admin-product-name", "Необхідно вказати назву товару");
+            }
+
+            // Валідація опису
+            if (string.IsNullOrEmpty(formModel.Description))
+            {
+                ModelState.AddModelError("admin-product-description", "Необхідно вказати опис товару");
+            }
+
             if (ModelState.IsValid)
             {
-                string? savedName = null!;
-
                 if (formModel.Image != null && formModel.Image.Length > 0)
                 {
                     try
@@ -180,44 +253,6 @@ namespace ASP_PV411.Controllers
                         },
                         });
                     }
-                }
-
-                Guid groupId;
-                try
-                {
-                    groupId = Guid.Parse(formModel.GroupId);
-                }
-                catch (Exception ex)
-                {
-                    return Json(new
-                    {
-                        Status = "Error",
-                        Errors = new Dictionary<string, string>
-                        {
-                            {
-                                "admin-product-group", ex.Message
-                            }
-                        }
-                    });
-                }
-                
-                Guid manufacturerId;
-                try
-                {
-                    manufacturerId = Guid.Parse(formModel.ManufacturerId);
-                }
-                catch (Exception ex)
-                {
-                    return Json(new
-                    {
-                        Status = "Error",
-                        Errors = new Dictionary<string, string>
-                        {
-                            {
-                                "admin-product-manufacturer", ex.Message
-                            }
-                        }
-                    });
                 }
 
                 Data.Entities.Product item = new()

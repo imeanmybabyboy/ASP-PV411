@@ -166,11 +166,12 @@ document.addEventListener("submit", (e) => {
     }
 })
 
+
 function adminGroupFormSubmitted(form) {
-    fetch("/Admin/AddGroup", {                 
-        method: "POST",                        
-        body: new FormData(form)               
-    }).then(r => {                             
+    fetch("/Admin/AddGroup", {
+        method: "POST",
+        body: new FormData(form)
+    }).then(r => {
         return r.json();
     }).then(j => {
         console.log(j);
@@ -179,16 +180,40 @@ function adminGroupFormSubmitted(form) {
             form.reset();
         }
         else {
-            alert(JSON.stringify(j.errors, null, 2));
+            validateGroupSubmitForm(form, j);
         }
     })
 }
 
+function validateGroupSubmitForm(form, errors) {
+    for (let elem of form.querySelectorAll("input, textarea")) {
+        elem.classList.remove("is-invalid");
+        elem.classList.add("is-valid");
+    }
+
+    for (let name in errors['errors']) {
+        let input = form.querySelector(`[name="${name}"]`)
+        if (input) {
+            console.log(input.classList);
+            input.classList.add("is-invalid");
+
+            let fb = form.querySelector(`[name=${name}]+.invalid-feedback`);
+            if (fb) {
+                fb.innerText = errors['errors'][name];
+            }
+            else {
+                console.error(`input name = '${name}' not found`)
+            }
+        }
+    }
+}
+
+
 function adminManufacturerFormSubmitted(form) {
-    fetch("/Admin/AddManufacturer", {                 
-        method: "POST",                        
-        body: new FormData(form)               
-    }).then(r => {                             
+    fetch("/Admin/AddManufacturer", {
+        method: "POST",
+        body: new FormData(form)
+    }).then(r => {
         return r.json();
     }).then(j => {
         console.log(j);
@@ -197,10 +222,34 @@ function adminManufacturerFormSubmitted(form) {
             form.reset();
         }
         else {
-            alert(JSON.stringify(j.errors, null, 2));
+            validateManufacturerSubmitForm(form, j);
         }
     })
 }
+
+function validateManufacturerSubmitForm(form, errors) {
+    for (let elem of form.querySelectorAll("input, textarea")) {
+        elem.classList.remove("is-invalid");
+        elem.classList.add("is-valid");
+    }
+
+    for (let name in errors['errors']) {
+        let input = form.querySelector(`[name="${name}"]`)
+        if (input) {
+            console.log(input.classList);
+            input.classList.add("is-invalid");
+
+            let fb = form.querySelector(`[name=${name}]+.invalid-feedback`);
+            if (fb) {
+                fb.innerText = errors['errors'][name];
+            }
+            else {
+                console.error(`input name = '${name}' not found`)
+            }
+        }
+    }
+}
+
 
 function adminProductFormSubmitted(form) {
     fetch("/Admin/AddProduct", {
@@ -215,10 +264,34 @@ function adminProductFormSubmitted(form) {
             form.reset();
         }
         else {
-            alert(JSON.stringify(j.errors, null, 2));
+            validateProductSubmitForm(form, j);
         }
     })
 }
+
+function validateProductSubmitForm(form, errors) {
+    for (let elem of form.querySelectorAll("input, textarea, select")) {
+        elem.classList.remove("is-invalid");
+        elem.classList.add("is-valid");
+    }
+
+    for (let name in errors['errors']) {
+        let input = form.querySelector(`[name="${name}"]`)
+        if (input) {
+            console.log(input.classList);
+            input.classList.add("is-invalid");
+
+            let fb = form.querySelector(`[name=${name}]+.invalid-feedback`);
+            if (fb) {
+                fb.innerText = errors['errors'][name];
+            }
+            else {
+                console.error(`input name = '${name}' not found`)
+            }
+        }
+    }
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     let btn = document.getElementById("btn-profile-edit");

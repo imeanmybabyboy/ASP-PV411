@@ -35,7 +35,7 @@ namespace ASP_PV411.Services.Storage
 
             if (mediaType == null)
             {
-                throw new Exception("Either extension is null or extension is unsupportable!");
+                throw new Exception("Розширення файлу не відповідає розширенню картинки!");
             }
 
             string ext = "." + mediaType.Split('/')[1];

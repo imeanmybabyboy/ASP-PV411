@@ -16,12 +16,14 @@
                     <label for="admin-product-name" class="form-label">Назва</label>
                     <input type="text" class="form-control" id="admin-product-name" placeholder="Назва товару"
                            name="admin-product-name">
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
             <div class="col">
                 <div class="mb-3">
                     <label for="admin-product-image" class="form-label">Зображення товару</label>
                     <input name="admin-product-image" class="form-control" type="file" id="admin-product-image">
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
         </div>
@@ -32,6 +34,7 @@
                     <label for="admin-product-price" class="form-label">Ціна</label>
                     <input type="number" step="0.01" min="0" class="form-control" id="admin-product-price" placeholder="Ціна товару"
                            name="admin-product-price">
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
             <div class="col">
@@ -39,6 +42,7 @@
                     <label for="admin-product-stock" class="form-label">Кількість</label>
                     <input type="number" step="1" min="0" class="form-control" id="admin-product-stock" placeholder="Кількість товару"
                            name="admin-product-stock">
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
         </div>
@@ -49,10 +53,12 @@
                     <label for="admin-product-group" class="form-label">Товарна група</label>
                     <select class="form-select" id="admin-product-group" aria-label="Товарна група" name="admin-product-group">
                         @foreach (var item in Model.Groups)
-                            {
+                        {
                             <option value="@item.Id">@item.Name</option>
-                            }
+                        }
+                            <option value="55">Aaa</option>
                     </select>
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
             <div class="col">
@@ -63,7 +69,9 @@
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
+                        <option value="52">ddjjd</option>
                     </select>
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
         </div>
@@ -72,6 +80,7 @@
             <div class="mb-3">
                 <label for="admin-product-description" class="form-label">Опис товару</label>
                 <textarea class="form-control" id="admin-product-description" rows="3" name="admin-product-description"></textarea>
+                <div class="invalid-feedback">feedback</div>
             </div>
         </div>
 
@@ -90,12 +99,14 @@
                     <label for="admin-group-name" class="form-label">Назва</label>
                     <input type="text" class="form-control" id="admin-group-name" placeholder="Назва товарної групи"
                            name="admin-group-name">
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
             <div class="col">
                 <div class="mb-3">
                     <label for="admin-group-image" class="form-label">Зображення для товарної групи</label>
                     <input name="admin-group-image" class="form-control" type="file" id="admin-group-image">
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
         </div>
@@ -103,7 +114,8 @@
         <div class="row">
             <div class="mb-3">
                 <label for="admin-group-description" class="form-label">Опис товарної групи</label>
-                <textarea class="form-control" id="admin-group-description" rows="3" name="admin-group-description"></textarea>
+                <textarea class="form-control" id="admin-group-description" rows="3" name="admin-group-description" placeholder="Опис товарної групи"></textarea>
+                <div class="invalid-feedback">feedback</div>
             </div>
         </div>
 
@@ -120,14 +132,16 @@
             <div class="col">
                 <div class="mb-3">
                     <label for="admin-manufacturer-name" class="form-label">Назва виробника</label>
-                    <input type="text" class="form-control" id="admin-manufacturer-name" placeholder="Назва товарної групи"
+                    <input type="text" class="form-control" id="admin-manufacturer-name" placeholder="Назва виробника"
                            name="admin-manufacturer-name">
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
             <div class="col">
                 <div class="mb-3">
                     <label for="admin-manufacturer-image" class="form-label">Логотип виробника</label>
                     <input name="admin-manufacturer-image" class="form-control" type="file" id="admin-manufacturer-image">
+                    <div class="invalid-feedback">feedback</div>
                 </div>
             </div>
         </div>
@@ -135,7 +149,8 @@
         <div class="row">
             <div class="mb-3">
                 <label for="admin-manufacturer-description" class="form-label">Опис виробника</label>
-                <textarea class="form-control" id="admin-manufacturer-description" rows="3" name="admin-manufacturer-description"></textarea>
+                <textarea class="form-control" id="admin-manufacturer-description" rows="3" name="admin-manufacturer-description" placeholder="Про виробника"></textarea>
+                <div class="invalid-feedback">feedback</div>
             </div>
         </div>
 
