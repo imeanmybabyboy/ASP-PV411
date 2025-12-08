@@ -94,6 +94,10 @@ namespace ASP_PV411.Data
                         RegisterAt = DateTime.MinValue,
                     }
                 );
+
+            modelBuilder.Entity<Entities.Product>()
+                .HasOne(p => p.Group)
+                .WithMany(g => g.Products);
         }
     }
 }

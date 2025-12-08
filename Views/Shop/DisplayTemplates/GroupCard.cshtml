@@ -1,0 +1,13 @@
+﻿@model ASP_PV411.Data.Entities.Group
+
+<div class="col">
+    <a class="nav-link text-dark h-100" asp-action="Group" asp-route-id="@Model.Slug">
+        <div class="card h-100">
+            <img src="/Storage/Item/@(Model.ImageUrl)" class="card-img-top" alt="@Model.Name">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Name</h5>
+                <p class="card-text">@Model.Descirption</p>
+            </div>
+        </div>
+    </a>
+</div>

@@ -4,6 +4,7 @@ using ASP_PV411.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASP_PV411.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251208181313_Slugs")]
+    partial class Slugs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,8 +120,6 @@ namespace ASP_PV411.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.ToTable("Products");
                 });
@@ -267,17 +268,6 @@ namespace ASP_PV411.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ASP_PV411.Data.Entities.Product", b =>
-                {
-                    b.HasOne("ASP_PV411.Data.Entities.Group", "Group")
-                        .WithMany("Products")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-                });
-
             modelBuilder.Entity("ASP_PV411.Data.Entities.Token", b =>
                 {
                     b.HasOne("ASP_PV411.Data.Entities.User", "User")
@@ -298,11 +288,6 @@ namespace ASP_PV411.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("ASP_PV411.Data.Entities.Group", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

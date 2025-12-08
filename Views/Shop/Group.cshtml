@@ -1,0 +1,26 @@
+﻿@model ASP_PV411.Models.Shop.ShopGroupViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+@if (Model.Group == null)
+{
+    <div class="alert alert-danger" role="alert">
+        Розділ не знайдено
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Розділ: @Model.Group.Name</h1>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var product in Model.Group.Products)
+        {
+            <p>@product.Name</p>
+            @* @Html.DisplayFor(m => product, "ProductCard") *@
+        }
+    </div>
+}

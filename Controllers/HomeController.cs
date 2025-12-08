@@ -47,7 +47,33 @@ namespace ASP_PV411.Controllers
 
         public IActionResult Index()
         {
+            string salt = _saltService.GetSalt();
+            ViewData["kdf"] = _kdfService.Dk("myPassword123", salt);
+
             return View();
+        }
+
+        public IActionResult Templates()
+        {
+            return View(new HomeTemplatesViewModel
+            {
+                UserRole = new()
+                {
+                    Id = "Test",
+                    Description = "Test User Role",
+                    CanCreate = 1,
+                    CanDelete = 0,
+                    CanUpdate = 1,
+                    CanRead = 0,
+                },
+                Token = new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid(),
+                    IssuedAt = DateTime.Now,
+                    ExpiredAt = DateTime.Now.AddHours(1.3)
+                }
+            });
         }
 
         public IActionResult Storage(HomeStorageFormModel? formModel)

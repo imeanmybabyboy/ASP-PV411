@@ -1,0 +1,14 @@
+﻿@model ASP_PV411.Data.Entities.UserRole
+
+Опис: @Model.Description,
+<br />
+Права:
+<br />
+Створення - @(Model.CanCreate > 0 ? "дозволено" : "заборонено")
+<br />
+Перегляд - @(Model.CanRead > 0 ? "дозволено" : "заборонено")
+<br />
+Оновлення - @(Model.CanUpdate > 0 ? "дозволено" : "заборонено")
+<br />
+Видалення - @(Model.CanDelete > 0 ? "дозволено" : "заборонено")
+<br />

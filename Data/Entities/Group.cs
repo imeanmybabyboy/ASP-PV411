@@ -6,6 +6,9 @@
         public string Name { get; set; } = null!;
         public string Descirption { get; set; } = null!;
         public string ImageUrl { get; set; } = null!;
+        public string Slug { get; set; } = "";
         public DateTime? DeleteAt { get; set; }
+
+        public ICollection<Product> Products { get; set; } = [];
     }
 }

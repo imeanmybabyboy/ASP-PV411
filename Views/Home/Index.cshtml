@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@ViewData["kdf"]
 
 <div class="text-center">
     <h1 class="display-4">Розробка веб-додатків з використанням технології ASP.NET Core</h1>
@@ -22,16 +23,28 @@
     <a class="list-group-item list-group-item-action" asp-action="Controllers" title="Контролери">
         <i class="bi bi-sign-intersection-y"></i> Контролери
     </a>
+    
     <a class="list-group-item list-group-item-action" asp-action="ControllersHomework">
         <i class="bi bi-sign-intersection-y"></i> Контролери. Практичне 13.11
     </a>
+    
     <a class="list-group-item list-group-item-action" title="База даних. Контекст" asp-action="Db">
         <i class="bi bi-database"></i> База даних. Контекст
     </a>
+    
     <a class="list-group-item list-group-item-action" title="Middleware" asp-action="Middleware">
         <i class="bi bi-arrow-bar-right"></i> Middleware. Утримання авторизації
     </a>
+    
     <a class="list-group-item list-group-item-action" asp-action="Storage">
         <i class="bi bi-file-earmark-arrow-up"></i> Завантаження та збереження файлів
+    </a>
+
+    <a class="list-group-item list-group-item-action" asp-action="Templates">
+        <i class="bi bi-tools"></i> Display Templates: шаблони відображення
+    </a>
+    
+    <a class="list-group-item list-group-item-action" asp-controller="Shop" asp-action="Index">
+        <i class="bi bi-cart-check"></i> Проєкт: крамниця
     </a>
 </div>

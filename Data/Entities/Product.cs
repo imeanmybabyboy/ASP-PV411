@@ -15,6 +15,9 @@ namespace ASP_PV411.Data.Entities
 
         [Column(TypeName = "decimal(12,2)")]
         public double Price { get; set; }
+        public string? Slug { get; set; }
         public DateTime? DeleteAt { get; set; }
+
+        public Group Group { get; set; } = null!;
     }
 }

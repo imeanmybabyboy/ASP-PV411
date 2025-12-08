@@ -63,6 +63,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+var migrationTask = app
+    .Services
+    .CreateScope()
+    .ServiceProvider
+    .GetRequiredService<DataContext>()
+    .Database
+    .MigrateAsync();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -77,5 +85,7 @@ app.UseAuthSession(); // додатковий Middleware
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+await migrationTask;
 
 app.Run();

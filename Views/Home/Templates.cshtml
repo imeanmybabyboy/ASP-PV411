@@ -1,0 +1,34 @@
+﻿@model ASP_PV411.Models.Home.HomeTemplatesViewModel
+
+@{
+    ViewData["Title"] = "Templates";
+}
+<div class="text-center">
+    <h1 class="display-4">Display Templates: шаблони відображення</h1>
+</div>
+<p>
+    Шаблони відображення - окремі представлення, які призначені для об'єктів-сутностей, частіше за все у множинному вигляді (ті, що повторюються).
+    Наприклад, картки товарів на сторінці крамниці.
+</p>
+<p>
+    Шаблони повинні зберігатись в піддиректорії з назвою <code>DisplayTemplates</code> у директорії з основними представленнями. Шаблони за замовчуванням шукаються за назвою класів (типів) об'єктів. Тобто, якщо файл-шаблон називається так само, як і клас моделі, то він буде знайдений автоматично.
+    Для підключення шаблону використовується "помічник"
+    <code>&commat;Html.DisplayFor()</code>.
+    Якщо тип даних складний, наприклад, узагальнений або колекційний, то вживаються іменовані шаблони за зразком
+    <code>&commat;Html.DisplayFor(m => Model.Token, "<b>TokenTpl</b>")</code>.
+</p>
+
+<div class="row">
+    <div class="col">
+        <h3>Без шаблону</h3>
+        @Html.DisplayFor(m => Model.Token)
+    </div>
+    <div class="col">
+        <h3>Авто шаблон</h3>
+        @Html.DisplayFor(m => Model.UserRole)
+    </div>
+    <div class="col">
+        <h3>Іменований шаблон</h3>
+        @Html.DisplayFor(m => Model.Token, "TokenTpl")
+    </div>
+</div>

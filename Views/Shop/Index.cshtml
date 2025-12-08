@@ -1,0 +1,16 @@
+﻿@model ASP_PV411.Models.Shop.ShopIndexViewModel
+
+@{
+    ViewData["Title"] = "Shop";
+}
+<div class="text-center">
+    <h1 class="display-4">Крамниця</h1>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var group in Model.Groups)
+    {
+        @Html.DisplayFor(m => group, "GroupCard")
+    }
+
+</div>
