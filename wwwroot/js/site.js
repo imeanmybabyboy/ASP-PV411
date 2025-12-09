@@ -174,7 +174,6 @@ function adminGroupFormSubmitted(form) {
     }).then(r => {
         return r.json();
     }).then(j => {
-        console.log(j);
         if (j.status === "Ok") {
             alert("Додано успішно");
             form.reset();
@@ -194,7 +193,6 @@ function validateGroupSubmitForm(form, errors) {
     for (let name in errors['errors']) {
         let input = form.querySelector(`[name="${name}"]`)
         if (input) {
-            console.log(input.classList);
             input.classList.add("is-invalid");
 
             let fb = form.querySelector(`[name=${name}]+.invalid-feedback`);
@@ -216,7 +214,6 @@ function adminManufacturerFormSubmitted(form) {
     }).then(r => {
         return r.json();
     }).then(j => {
-        console.log(j);
         if (j.status === "Ok") {
             alert("Додано успішно");
             form.reset();
@@ -236,7 +233,6 @@ function validateManufacturerSubmitForm(form, errors) {
     for (let name in errors['errors']) {
         let input = form.querySelector(`[name="${name}"]`)
         if (input) {
-            console.log(input.classList);
             input.classList.add("is-invalid");
 
             let fb = form.querySelector(`[name=${name}]+.invalid-feedback`);
@@ -258,7 +254,6 @@ function adminProductFormSubmitted(form) {
     }).then(r => {
         return r.json();
     }).then(j => {
-        console.log(j);
         if (j.status === "Ok") {
             alert("Додано успішно");
             form.reset();
@@ -278,7 +273,6 @@ function validateProductSubmitForm(form, errors) {
     for (let name in errors['errors']) {
         let input = form.querySelector(`[name="${name}"]`)
         if (input) {
-            console.log(input.classList);
             input.classList.add("is-invalid");
 
             let fb = form.querySelector(`[name=${name}]+.invalid-feedback`);

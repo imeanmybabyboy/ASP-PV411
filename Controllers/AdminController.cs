@@ -59,6 +59,11 @@ namespace ASP_PV411.Controllers
                 ModelState.AddModelError("admin-manufacturer-description", "Необхідно вказати опис виробника");
             }
 
+            if (string.IsNullOrEmpty(formModel.Slug))
+            {
+                ModelState.AddModelError("admin-manufacturer-slug", "Необхідно вказати категорію (слаг) виробника");
+            }
+
             if (ModelState.IsValid)
             {
                 Data.Entities.Manufacturer item = new()
@@ -66,7 +71,8 @@ namespace ASP_PV411.Controllers
                     Id = Guid.NewGuid(),
                     Name = formModel.Name,
                     Descirption = formModel.Description,
-                    ImageUrl = savedName
+                    ImageUrl = savedName,
+                    Slug = formModel.Slug,
                 };
                 dataContext.Manufacturers.Add(item);
                 dataContext.SaveChanges();
@@ -134,6 +140,11 @@ namespace ASP_PV411.Controllers
                 ModelState.AddModelError("admin-group-description", "Необхідно вказати опис товарної групи");
             }
 
+            if (string.IsNullOrEmpty(formModel.Slug))
+            {
+                ModelState.AddModelError("admin-group-slug", "Необхідно вказати категорію (слаг) товарної групи");
+            }
+
             if (ModelState.IsValid)
             {
                 Data.Entities.Group item = new()
@@ -141,7 +152,8 @@ namespace ASP_PV411.Controllers
                     Id = Guid.NewGuid(),
                     Name = formModel.Name,
                     Descirption = formModel.Description,
-                    ImageUrl = savedName
+                    ImageUrl = savedName,
+                    Slug = formModel.Slug,
                 };
                 dataContext.Groups.Add(item);
                 dataContext.SaveChanges();
@@ -262,6 +274,7 @@ namespace ASP_PV411.Controllers
                     ManufacturerId = manufacturerId,
                     Name = formModel.Name,
                     Descirption = formModel.Description,
+                    Slug = formModel.Slug,
                     ImageUrl = savedName,
                     Price = formModel.Price,
                     Stock = formModel.Stock,

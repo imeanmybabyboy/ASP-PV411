@@ -20,6 +20,10 @@ namespace ASP_PV411.Models.Admin
         public string Description { get; set; } = null!;
 
 
+        [FromForm(Name = "admin-product-slug")]
+        public string? Slug { get; set; }
+
+
         [FromForm(Name = "admin-product-image")]
         public IFormFile Image { get; set; } = null!;
 

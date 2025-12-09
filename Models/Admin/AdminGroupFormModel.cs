@@ -14,5 +14,9 @@ namespace ASP_PV411.Models.Admin
 
         [FromForm(Name = "admin-group-image")]
         public IFormFile Image { get; set; } = null!;
+
+
+        [FromForm(Name = "admin-group-slug")]
+        public string Slug { get; set; } = null!;
     }
 }
