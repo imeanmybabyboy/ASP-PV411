@@ -3,5 +3,6 @@
     public class ShopGroupViewModel
     {
         public Data.Entities.Group? Group { get; set; }
+        public ICollection<Data.Entities.Product>? YouMayLikeProducts { get; set; }
     }
 }

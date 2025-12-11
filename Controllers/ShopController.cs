@@ -1,11 +1,12 @@
 ﻿using ASP_PV411.Data;
 using ASP_PV411.Models.Shop;
+using ASP_PV411.Services.Random;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASP_PV411.Controllers
 {
-    public class ShopController(DataContext dataContext) : Controller
+    public class ShopController(DataContext dataContext, IRandomService randomService) : Controller
     {
         public IActionResult Index()
         {
@@ -16,15 +17,71 @@ namespace ASP_PV411.Controllers
 
             return View(model);
         }
-        
+
         public IActionResult Group([FromRoute] string id)
         {
+            // якщо товарів немає, обираємо рандомні товари з іншої категорії, кількість товарів якої > 0
+            int currentGroupProductsQuantity = dataContext.Groups.Include(g => g.Products).Where(g => g.Slug == id).Select(g => g.Products.Count).FirstOrDefault();
+            ICollection<Data.Entities.Product> youMayLikeProducts = null!;
+
+            // перевіряємо, щоб група була порожня для формування списку товарів, які можуть сподобатися
+            if (currentGroupProductsQuantity == 0)
+            {
+                // беремо Id поточної групи та звіряємо, щоб рандомна група != поточній
+                string currentGroupId = dataContext
+                        .Groups
+                        .FirstOrDefault(p => p.Slug == id || p.Id.ToString() == id)!
+                        .Id.ToString()!;
+
+                var groups = dataContext
+                    .Groups
+                    .Where(g => g.Id != Guid.Parse(currentGroupId) && g.Products.Count != 0)
+                    .ToList();
+
+                string randomGroupId = groups[randomService.RandomInt(groups.Count)].Id.ToString();
+
+                // створюємо список товарів із рандомної групи
+                youMayLikeProducts = dataContext.Products.Where(p => p.GroupId == Guid.Parse(randomGroupId)).ToList();
+            }
+
             ShopGroupViewModel model = new()
             {
                 Group = dataContext
                 .Groups
                 .Include(g => g.Products)
-                .FirstOrDefault(g => g.Slug == id)
+                .FirstOrDefault(g => g.Slug == id),
+                YouMayLikeProducts = youMayLikeProducts,
+            };
+
+            return View(model);
+        }
+
+        public IActionResult Product([FromRoute] string id)
+        {
+            string currentGroupId = dataContext.Products.FirstOrDefault(p => p.Slug == id || p.Id.ToString() == id)!.GroupId.ToString();
+            var currentProduct = dataContext
+                .Products
+                .FirstOrDefault(p => p.Slug == id || p.Id.ToString() == id);
+
+            // обираємо інші товари з цієї ж категорії
+            var youMayLikeProducts = dataContext.Products.Where(p => p.GroupId == Guid.Parse(currentGroupId) && p.Id != currentProduct!.Id).ToList();
+            
+            // якщо товарів у цій категорії більше немає, обираємо товари з іншої категорії
+            if (youMayLikeProducts.Count == 0)
+            {
+                var groups = dataContext
+                    .Groups
+                    .Where(g => g.Id != Guid.Parse(currentGroupId) && g.Products.Count != 0)
+                    .ToList();
+
+                string randomGroupId = groups[randomService.RandomInt(groups.Count)].Id.ToString();
+                youMayLikeProducts = dataContext.Products.Where(p => p.GroupId == Guid.Parse(randomGroupId)).ToList();
+            }
+
+            ShopProductViewModel model = new()
+            {
+                Product = currentProduct,
+                YouMayLikeProducts = youMayLikeProducts,
             };
 
             return View(model);

@@ -1,0 +1,72 @@
+﻿@model ASP_PV411.Models.Shop.ShopProductViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+@if (Model.Product == null)
+{
+    <div class="alert alert-danger text-center" role="alert">
+        Розділ не знайдено, перевірте посилання
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col col-4">
+            <img src="/Storage/Item/@(Model.Product.ImageUrl)"
+                 class="w-100"
+                 alt="@Model.Product.Name">
+        </div>
+
+        <div class="col col-6">
+            <h2>@Model.Product.Name</h2>
+            <h3>@Model.Product.Descirption</h3>
+            <div class="product-rating" title="Оцінка 4.8 @('\n')Відгуків: 124">★★★★★</div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="d-flex flex-column">
+                    @if (Model.Product.Stock > 0)
+                    {
+                        <span class="text-success">В наявності</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Очікується</span>
+                    }
+
+                    <span class="text-decoration-line-through">
+                        @((Model.Product.Price * 1.2).ToString("F2"))
+                    </span>
+
+                    <span class="fs-5 text-success fw-bold">
+                        ₴&thinsp;@Model.Product.Price.ToString("F2")
+                    </span>
+                </div>
+
+                <button type="button" class="btn btn-success shadow-none px-4">
+                    <i class="bi bi-cart"></i> Купити
+                </button>
+
+                <button type="button" class="btn btn-outline-success shadow-none px-4">
+                    Оплата частинами
+                </button>
+            </div>
+        </div>
+
+        <div class="col col-2">
+        </div>
+    </div>
+
+    <p class="mt-5">
+        <div class="col">
+            <h5>Також вас можуть зацікавити</h5>
+
+            <div class="d-flex gap-4 w-25">
+                @foreach (var product in Model.YouMayLikeProducts!)
+                {
+                    @Html.DisplayFor(m => product, "ProductCard")
+                }
+            </div>
+        </div>
+    </p>
+}

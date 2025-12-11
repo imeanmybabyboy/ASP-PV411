@@ -6,21 +6,42 @@
 
 @if (Model.Group == null)
 {
-    <div class="alert alert-danger" role="alert">
-        Розділ не знайдено
+    <div class="alert alert-danger text-center" role="alert">
+        Розділ не знайдено, перевірте посилання
     </div>
 }
 else
 {
-    <div class="text-center">
-        <h1 class="display-4">Розділ: @Model.Group.Name</h1>
-    </div>
+    @if (Model.Group.Products.Count == 0)
+    {
+        <div class="alert alert-danger text-center">Товари не знайдено</div>
+    }
+    else
+    {
+        <div class="text-center">
+            <h1 class="display-4">Розділ: @Model.Group.Name</h1>
+        </div>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        @foreach (var product in Model.Group.Products)
-        {
-            <p>@product.Name</p>
-            @* @Html.DisplayFor(m => product, "ProductCard") *@
-        }
-    </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var product in Model.Group.Products)
+            {
+                @Html.DisplayFor(m => product, "ProductCard")
+            }
+        </div>
+    }
+    @if (Model.YouMayLikeProducts != null)
+    {
+        <p class="mt-5">
+            <div class="col">
+                <h5>Також вас можуть зацікавити</h5>
+
+                <div class="d-flex gap-4 w-25">
+                    @foreach (var product in Model.YouMayLikeProducts!)
+                    {
+                        @Html.DisplayFor(m => product, "ProductCard")
+                    }
+                </div>
+            </div>
+        </p>
+    }
 }
