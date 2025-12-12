@@ -293,7 +293,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     btn = document.getElementById("btn-profile-delete");
     if (btn) btn.addEventListener('click', btnProfileDeleteClick)
+
+    for (let b of document.querySelectorAll("[data-to-cart]")) {
+        b.addEventListener("click", btnAddToCartClick);
+    }
 })
+
+function btnAddToCartClick(e) {
+    let btn = e.target.closest("[data-to-cart]");
+    if (!btn) {
+        throw "btnAddToCartClick: closest not found"
+    }
+
+    let id = btn.getAttribute("data-to-cart");
+    fetch("/Cart/Add/" + id)
+        .then(r => r.json())
+        .then(j => console.log(j))
+}
 
 function btnProfileDeleteClick() {
     if (confirm("Ви збираєтеся закрити профіль. Уся персональна інформація буде видалена і не підлягатиме відновленню. Підтверджуєте?")) {

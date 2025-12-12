@@ -16,6 +16,10 @@ namespace ASP_PV411.Data
         public DbSet<Entities.Group> Groups { get; set; }
         public DbSet<Entities.Manufacturer> Manufacturers { get; set; }
         public DbSet<Entities.Product> Products { get; set; }
+        public DbSet<Entities.Cart> Carts { get; set; }
+        public DbSet<Entities.CartItem> CartItems { get; set; }
+        public DbSet<Entities.Discount> Discounts { get; set; }
+
         public DataContext(DbContextOptions options, IKdfService kdfService) : base(options)
         {
             _kdfService = kdfService;
@@ -36,6 +40,24 @@ namespace ASP_PV411.Data
             modelBuilder.Entity<Entities.Token>()
                 .HasOne(t => t.User)
                 .WithMany();
+
+            modelBuilder.Entity<Entities.CartItem>()
+                .HasOne(ci => ci.Cart)
+                .WithMany(c => c.CartItems);
+            
+            modelBuilder.Entity<Entities.CartItem>()
+                .HasOne(ci => ci.Discount)
+                .WithMany();
+
+            modelBuilder.Entity<Entities.Cart>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Carts);
+
+            modelBuilder.Entity<Entities.Cart>()
+                .HasOne(c => c.Discount)
+                .WithMany();
+            
+
 
 
             ///////////// Сідування 

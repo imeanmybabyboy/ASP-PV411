@@ -26,5 +26,6 @@ namespace ASP_PV411.Data.Entities
         public DateTime? DeleteAt { get; set; }
             
         public UserRole Role { get; set; } = null!;
+        public ICollection<Cart> Carts { get; set; } = [];
     }
 }
