@@ -12,6 +12,9 @@
 }
 else
 {
+    <div id="live-alert-placeholder" class="position-fixed start-50 translate-middle-x user-select-none" style="z-index: 2000">
+    </div>
+
     <div class="row">
         <div class="col col-4">
             <img src="/Storage/Item/@(Model.Product.ImageUrl)"
@@ -43,7 +46,8 @@ else
                     </span>
                 </div>
 
-                <button type="button" class="btn btn-success shadow-none px-4">
+                <button type="button" class="btn btn-success shadow-none px-4"
+                        data-to-cart="@Model.Product.Id" data-bs-dismiss="alert" data-bs-target="#product-adding-alert">
                     <i class="bi bi-cart"></i> Купити
                 </button>
 

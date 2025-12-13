@@ -12,28 +12,30 @@
 }
 else
 {
+    <div id="live-alert-placeholder" class="position-fixed start-50 translate-middle-x user-select-none" style="z-index: 2000">
+    </div>
     @if (Model.Group.Products.Count == 0)
     {
         <div class="alert alert-danger text-center">Товари не знайдено</div>
     }
     else
     {
-        <div class="text-center">
-            <h1 class="display-4">Розділ: @Model.Group.Name</h1>
-        </div>
+            <div class="text-center">
+                <h1 class="display-4">Розділ: @Model.Group.Name</h1>
+            </div>
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            @foreach (var product in Model.Group.Products)
-            {
-                @Html.DisplayFor(m => product, "ProductCard")
-            }
-        </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                @foreach (var product in Model.Group.Products)
+                {
+                    @Html.DisplayFor(m => product, "ProductCard")
+                }
+            </div>
     }
     @if (Model.YouMayLikeProducts != null)
     {
-        <p class="mt-5">
+        <p class="mt-5 position-relative">
             <div class="col">
-                <h5>Також вас можуть зацікавити</h5>
+                <h5>Вас можуть зацікавити</h5>
 
                 <div class="d-flex gap-4 w-25">
                     @foreach (var product in Model.YouMayLikeProducts!)

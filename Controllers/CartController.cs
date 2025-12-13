@@ -19,7 +19,7 @@ namespace ASP_PV411.Controllers
             bool isAuthenticated = HttpContext.User.Identity?.IsAuthenticated ?? false;
             if (!isAuthenticated)
             {
-                return Json(new { Status = "Error", Message = "UnAuthorized" });
+                return Json(new { Status = "Error", Message = "You need to authenticate" });
             }
             Guid userId = Guid.Parse(
                 HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Sid).Value
@@ -54,6 +54,10 @@ namespace ASP_PV411.Controllers
                 dataContext.Carts.Add(cart);
             }
 
+
+            // Перевіряємо чи є в кошику даний товар, якщо є, то
+            // збільшуємо кількість, якщо ні - створюємо нову позицію
+
             CartItem? cartItem = cart.CartItems
                 .FirstOrDefault(ci => ci.ProductId == product.Id && ci.DeleteAt == null);
 
@@ -75,8 +79,6 @@ namespace ASP_PV411.Controllers
                 cartItem.Quantity += 1;
             }
 
-            // Перевіряємо чи є в кошику даний товар, якщо є, то
-            // збільшуємо кількість, якщо ні - створюємо нову позицію
 
             // Перераховуємо ціни з урахуванням акцій
 
@@ -106,7 +108,7 @@ namespace ASP_PV411.Controllers
             return Json(new
             {
                 Status = "Ok",
-                Message = "Added"
+                Message = "Successfully added"
             });
         }
 

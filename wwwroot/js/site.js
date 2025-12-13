@@ -299,6 +299,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 })
 
+function handleProductAlert(json) {
+    const alertPlaceholder = document.getElementById('live-alert-placeholder')
+
+    const appendAlert = (message, type) => {
+        const wrapper = document.createElement('div')
+        wrapper.innerHTML = [
+            `<div class="alert alert-${type} alert-dismissible w-100 text-center fade show p-3" role="alert" style="transition: 1.5s !important">`,
+            `   <div>${message}</div>`,
+            '</div>'
+        ].join('')
+
+        alertPlaceholder.append(wrapper)
+
+        const alertElement = wrapper.querySelector(".alert")
+        const addProductAlert = bootstrap.Alert.getOrCreateInstance(alertElement);
+        window.setTimeout(() => {
+            addProductAlert.close();
+        }, 3000)
+    }
+
+    if (json.status.toLowerCase() === "ok") {
+        appendAlert(json.message, 'success')
+    }
+    else {
+        appendAlert(json.message, 'danger')
+    }
+}
+
+
 function btnAddToCartClick(e) {
     let btn = e.target.closest("[data-to-cart]");
     if (!btn) {
@@ -308,7 +337,9 @@ function btnAddToCartClick(e) {
     let id = btn.getAttribute("data-to-cart");
     fetch("/Cart/Add/" + id)
         .then(r => r.json())
-        .then(j => console.log(j))
+        .then(j => handleProductAlert(j))
+
+
 }
 
 function btnProfileDeleteClick() {
