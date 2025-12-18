@@ -273,7 +273,7 @@ namespace ASP_PV411.Controllers
                     GroupId = groupId,
                     ManufacturerId = manufacturerId,
                     Name = formModel.Name,
-                    Descirption = formModel.Description,
+                    Description = formModel.Description,
                     Slug = formModel.Slug,
                     ImageUrl = savedName,
                     Price = formModel.Price,

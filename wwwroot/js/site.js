@@ -305,7 +305,7 @@ function handleProductAlert(json) {
     const appendAlert = (message, type) => {
         const wrapper = document.createElement('div')
         wrapper.innerHTML = [
-            `<div class="alert alert-${type} alert-dismissible w-100 text-center fade show p-3" role="alert" style="transition: 1.5s !important">`,
+            `<div class="alert alert-${type} alert-dismissible text-center fade show p-3" role="alert" style="transition: 1.5s !important">`,
             `   <div>${message}</div>`,
             '</div>'
         ].join('')

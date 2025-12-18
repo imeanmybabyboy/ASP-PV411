@@ -1,5 +1,6 @@
 ﻿using ASP_PV411.Data;
 using ASP_PV411.Data.Entities;
+using ASP_PV411.Models.Cart;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -10,7 +11,22 @@ namespace ASP_PV411.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            string? userId = User
+                .Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
+
+            CartIndexViewModel viewModel = new()
+            {
+                IsAuthorized = userId != null,
+                ActiveCart = userId == null ? null :
+                dataContext
+                .Carts
+                .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.Product)
+                .FirstOrDefault(c => c.UserId.ToString() == userId && c.CloseAt == null)
+            };
+
+            return View(viewModel);
         }
 
         public JsonResult Add([FromRoute] String id)
@@ -41,7 +57,6 @@ namespace ASP_PV411.Controllers
                     .ThenInclude(ci => ci.Product)
                 .Include(c => c.CartItems)
                     .ThenInclude(ci => ci.Discount)
-
                 .FirstOrDefault(c => c.UserId == userId && c.CloseAt == null);
 
             if (cart == null)

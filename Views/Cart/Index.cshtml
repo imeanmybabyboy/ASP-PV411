@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ASP_PV411.Models.Cart.CartIndexViewModel
+
+@{
     ViewData["Title"] = "Cart";
     bool isAuthenticated = Context.User.Identity?.IsAuthenticated ?? false;
 }
@@ -8,13 +10,124 @@
     </h1>
 </div>
 
-@if (!isAuthenticated)
+@if (!Model.IsAuthorized)
 {
     <div class="alert alert-danger text-center" role="alert">
         Для перегляду кошику необхідно увійти до системи
     </div>
 }
+else if (Model.ActiveCart == null)
+{
+    <div class="alert alert-warning text-center" role="alert">
+        Ваш кошик поки що порожній.
+    </div>
+
+    <a class="btn btn-success" asp-controller="Shop">До крамниці</a>
+}
 else
 {
-    
+    <div class="d-flex position-relative">
+        <div class="col col-9">
+            @foreach (var ci in Model.ActiveCart.CartItems)
+            {
+                <div class="border m-4 p-3 shadow row">
+                    <div class="col col-2">
+                        <a asp-controller="Shop" asp-action="Product" asp-route-id="@(ci.Product.Slug ?? ci.Product.Id.ToString())">
+                            <img src="/Storage/Item/@(ci.Product.ImageUrl)" class="w-100" alt="@(ci.Product.Name)">
+                        </a>
+                    </div>
+
+                    <div class="col col-5">
+                        <h2>@(ci.Product.Name)</h2>
+                        @(ci.Product.Description)
+                    </div>
+
+
+                    <div class="col col-1 text-center">
+                        <h5>Ціна</h5>
+                        @(ci.Product.Price)
+                    </div>
+
+                    <div class="col col-2 text-center d-flex flex-column align-items-center">
+                        <h5>Кількість</h5>
+
+                        <div class="d-flex gap-2 align-items-center">
+                            @* TODO: реалізувати зміну кількості замовлення *@
+
+                            <div class="border mt-2 p-2 d-inline-flex gap-2 align-items-center">
+                                <div class="rounded-circle wh-2 center bg-secondary bg-opacity-25" role="button">-</div>
+                                @(ci.Quantity)
+                                <div class="rounded-circle wh-2 center bg-secondary bg-opacity-25" role="button">+</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col col-1 text-center">
+                        <h5>Вартість</h5>
+                        @(ci.Price)
+                    </div>
+
+                    <div class="col col-1 text-end">
+                        <i class="bi bi-trash3 text-danger" role="button"></i>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="position-fixed end-0 me-5 d-flex flex-column text-center gap-2 border p-3 shadow row">
+            <h4>Підсумок</h4>
+            @foreach (var ci in Model.ActiveCart.CartItems)
+            {
+                <div class="d-flex align-items-baseline justify-content-end">
+                    <h6 class="">@ci.Product.Name</h6>
+                    <span class="border-start border-2 ms-3 ps-3">@(ci.Quantity)x</span>
+                    <span class="border-start border-2 ms-3 ps-3">₴&thinsp;@(ci.Price)</span>
+                </div>
+            }
+
+            <div class="border-top border-1 pt-3 d-flex flex-column gap-2">
+                @if (Model.ActiveCart.Discount != null)
+                {
+                    <div>Знижка: @Model.ActiveCart.Discount.Percent %</div>
+                }
+                else
+                {
+                    <div>Без знижки</div>
+                }
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6>Всього товару</h6>
+                        @{
+                            int quantity = 0;
+                            foreach (var ci in Model.ActiveCart.CartItems)
+                            {
+                                quantity += ci.Quantity;
+                            }
+                            <span>@quantity</span>
+                        }
+                    </div>
+
+                    <div>
+                        <h6>Вартість</h6>
+
+                        @if (Model.ActiveCart.Discount != null)
+                        {
+                            <span>₴&thinsp;@(Model.ActiveCart.Price * Model.ActiveCart.Discount.Percent)</span>
+                        }
+                        else
+                        {
+                            <span>₴&thinsp;@Model.ActiveCart.Price</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-2">
+                <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-warning">Відкласти</a>
+                <a class="btn btn-success" onclick="alert('Придбано')">Придбати</a>
+            </div>
+        </div>
+    </div>
+
 }

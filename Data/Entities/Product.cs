@@ -9,7 +9,7 @@ namespace ASP_PV411.Data.Entities
         public Guid GroupId { get; set; }
         public Guid ManufacturerId { get; set; }
         public string Name { get; set; } = null!;
-        public string? Descirption { get; set; } = null!;
+        public string? Description { get; set; } = null!;
         public string? ImageUrl { get; set; } = null!;
         public int Stock { get; set; }
 

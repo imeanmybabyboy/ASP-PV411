@@ -2,12 +2,12 @@
 
 <div class="col">
     <div class="card h-100 position-relative">
-        <div class="position-absolute top-0 end-0 m-3 px-3 py-2 bg-secondary bg-opacity-25 rounded-circle text-light"><i class="bi bi-heart"></i></div>
+        <div class="position-absolute top-0 end-0 m-3 bg-secondary bg-opacity-25 rounded-circle text-light wh-2 center"><i class="bi bi-heart" role="button"></i></div>
         <a class="nav-link text-dark h-100" asp-action="Product" asp-route-id="@(Model.Slug ?? Model.Id.ToString())">
             <img src="/Storage/Item/@(Model.ImageUrl)" class="card-img-top" alt="@Model.Name">
             <div class="card-body">
                 <h5 class="card-title">@Model.Name</h5>
-                <p class="card-text">@Model.Descirption</p>
+                <p class="card-text">@Model.Description</p>
             </div>
             <div class="product-rating" title="Оцінка 4.8 @('\n')Відгуків: 124">★★★★★</div>
         </a>
