@@ -17,8 +17,8 @@
 else
 {
     <div class="row">
-        <div class="col col-6 offset-3">
-            <table class="table">
+        <div class="col col-sm-12 offset-sm-0 col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-5 offset-xl-1 col-xxl-4 offset-xxl-2">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Назва</th>
@@ -105,8 +105,32 @@ else
                     </tr>
                 </tbody>
             </table>
-
             <button id="btn-profile-delete" class="btn btn-danger">Видалити профіль</button>
+        </div>
+
+        <div class="col col-sm-12 col-xl-5 col-xxl-4">
+            @if (Model.Carts.Count == 0)
+            {
+                <h2 class="display-6">Ви ще не здійснювали покупки</h2>
+            }
+            else
+            {
+                <h2 class="display-6">Історія покупок</h2>
+
+                foreach (var cart in Model.Carts)
+                {
+                    <a
+                        asp-controller="Cart"
+                        asp-action="Index"
+                       asp-route-id=@(cart.CloseStatus == null ? null : cart.Id)
+                        class="nav-link alert alert-@(cart.CloseStatus switch { 1 => "success", null => "primary", -1 => "danger", _ => "info"})"
+                        role="alert"title="@(cart.CloseStatus switch { 1 => "Оплачений кошик", null => "Поточний кошик", -1 => "Відкладений кошик", _ => "Кошик" })"
+                        >
+                        @cart.OpenAt.ToShortDateString()
+                        @cart.Price
+                    </a>
+                }
+            }
         </div>
     </div>
 }

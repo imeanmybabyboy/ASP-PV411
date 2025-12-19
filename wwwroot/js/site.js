@@ -297,6 +297,14 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let b of document.querySelectorAll("[data-to-cart]")) {
         b.addEventListener("click", btnAddToCartClick);
     }
+
+    for (let b of document.querySelectorAll("[data-buy-cart]")) {
+        b.addEventListener("click", btnBuyCartClick);
+    }
+
+    for (let b of document.querySelectorAll("[data-drop-cart]")) {
+        b.addEventListener("click", btnDropCartClick);
+    }
 })
 
 function handleProductAlert(json) {
@@ -427,6 +435,60 @@ function btnProfileEditClick(e) {
                 tr.style.display = "table-row";
             }
         }
+    }
+}
+
+
+function btnBuyCartClick(e) {
+    let confirmBuy = confirm("Підтвердити придбання товарів?")
+    if (confirmBuy) {
+        let btn = e.target.closest("[data-buy-cart]");
+        if (!btn) {
+            throw "btnBuyCartClick: closest not found"
+        }
+
+        let id = btn.getAttribute("data-buy-cart");
+        fetch("/Cart/Buy/" + id)
+            .then(r => r.json())
+            .then(j => {
+                if (j.status == "Ok") {
+                    alert("Успішно придбано")
+                    window.location.reload();
+                }
+                else {
+                    console.log(j.message)
+                }
+            })
+    }
+    else {
+        alert("Придбання відхилено")
+    }
+}
+
+function btnDropCartClick(e) {
+    let confirmDrop = confirm("Підтвердити відкладення кошику?");
+    if (confirmDrop) {
+        let btn = e.target.closest("[data-drop-cart]");
+        if (!btn) {
+            throw "btnDropCartClick: closest not found"
+        }
+
+        let id = btn.getAttribute("data-drop-cart");
+        fetch("/Cart/Drop/" + id)
+            .then(r => r.json())
+            .then(j => {
+                if (j.status == "Ok") {
+                    alert("Кошик відкладено")
+                    window.location.reload();
+                }
+                else {
+                    console.log(j.message)
+                }
+            })
+
+    }
+    else {
+        alert("Відкладення відхилено")
     }
 }
 

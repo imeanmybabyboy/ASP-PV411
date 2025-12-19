@@ -4,10 +4,12 @@
     ViewData["Title"] = "Cart";
     bool isAuthenticated = Context.User.Identity?.IsAuthenticated ?? false;
 }
+
 <div class="text-center">
     <h1 class="display-4">
         Мій кошик
     </h1>
+    @Model.ActiveCart?.Id
 </div>
 
 @if (!Model.IsAuthorized)
@@ -86,9 +88,9 @@ else
             }
 
             <div class="border-top border-1 pt-3 d-flex flex-column gap-2">
-                @if (Model.ActiveCart.Discount != null)
+                @if (Model.ActiveCart.DiscountId != null)
                 {
-                    <div>Знижка: @Model.ActiveCart.Discount.Percent %</div>
+                    <div>Знижка: @Model.ActiveCart.Discount?.Percent %</div>
                 }
                 else
                 {
@@ -113,7 +115,7 @@ else
 
                         @if (Model.ActiveCart.Discount != null)
                         {
-                            <span>₴&thinsp;@(Model.ActiveCart.Price * Model.ActiveCart.Discount.Percent)</span>
+                            <span>₴&thinsp;@(Model.ActiveCart.Price* Model.ActiveCart.Discount.Percent)</span>
                         }
                         else
                         {
@@ -123,10 +125,27 @@ else
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between mt-2">
-                <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-warning">Відкласти</a>
-                <a class="btn btn-success" onclick="alert('Придбано')">Придбати</a>
-            </div>
+            @if (Model.ActiveCart.CloseAt == null)
+            {
+                <div class="d-flex justify-content-between mt-2">
+                    <a role="button" class="btn btn-outline-warning shadow-none" data-drop-cart="@Model.ActiveCart.Id">
+                        Відкласти
+                    </a>
+
+                    <a class="btn btn-success shadow-none" role="button" data-buy-cart="@Model.ActiveCart.Id">
+                        Придбати
+                    </a>
+                </div>
+            }
+            else if (Model.ActiveCart.CloseStatus == 1)
+            {
+                <button class="btn btn-primary" data-repeat-cart="@Model.ActiveCart.Id">Повторити</button>
+            }
+            else
+            {
+                <button class="btn btn-primary" data-repeat-cart="@Model.ActiveCart.Id">Відновити</button>
+            }
+
         </div>
     </div>
 

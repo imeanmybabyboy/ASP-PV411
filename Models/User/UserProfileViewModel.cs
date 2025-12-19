@@ -4,5 +4,6 @@
     {
         public Data.Entities.User User { get; set; } = null!;
         public bool IsPersonal { get; set; }
+        public List<Data.Entities.Cart> Carts { get; set; } = [];
     }
 }

@@ -56,7 +56,15 @@ namespace ASP_PV411.Data
             modelBuilder.Entity<Entities.Cart>()
                 .HasOne(c => c.Discount)
                 .WithMany();
-            
+
+            modelBuilder.Entity<Entities.CartItem>()
+                .HasOne(ci => ci.Discount)
+                .WithMany();
+
+
+            modelBuilder.Entity<Entities.Cart>()
+                .HasOne(c => c.Discount)
+                .WithMany();
 
 
 

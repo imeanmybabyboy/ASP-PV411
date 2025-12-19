@@ -339,8 +339,18 @@ namespace ASP_PV411.Controllers
             if (isAuthenticated)
             {
                 string userId = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Sid).Value;
-                var user = dataContext.Users.Include(u => u.Role).First(u => u.Id == Guid.Parse(userId) && u.DeleteAt == null)!;
-                return View(new UserProfileViewModel() { User = user, IsPersonal = true });
+                Guid userGuid = Guid.Parse(userId);
+
+                var user = dataContext.Users.Include(u => u.Role).First(u => u.Id == userGuid && u.DeleteAt == null)!;
+                return View(new UserProfileViewModel()
+                {
+                    User = user,
+                    IsPersonal = true,
+                    Carts = dataContext.Carts
+                    .OrderByDescending(c => c.OpenAt)
+                    .Where(c => c.UserId == userGuid)
+                    .ToList(),
+                });
             }
             else
             {
