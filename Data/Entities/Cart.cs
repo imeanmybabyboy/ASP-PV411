@@ -8,7 +8,7 @@
         public double Price { get; set; }
         public DateTime OpenAt { get; set; } = DateTime.Now;
         public DateTime? CloseAt { get; set; }
-        public int? CloseStatus { get; set; } // 0 - deleted, 1 - purchased ...
+        public int? CloseStatus { get; set; } // 1 - purchased, -1 canceled, null - current cart
 
         public ICollection<CartItem> CartItems { get; set; } = [];
         public User User { get; set; } = null!;
