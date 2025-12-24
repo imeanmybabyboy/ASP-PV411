@@ -13,6 +13,8 @@ using ASP_PV411.Services.Timestamp;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
+// Comment from gitHub
+
 var defaultCulture = new CultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
 CultureInfo.DefaultThreadCurrentUICulture = defaultCulture;
