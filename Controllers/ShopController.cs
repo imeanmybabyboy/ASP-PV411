@@ -17,6 +17,23 @@ namespace ASP_PV411.Controllers
 
             return View(model);
         }
+        
+        public JsonResult ApiIndex()
+        {
+            ShopIndexViewModel model = new()
+            {
+                Groups = dataContext
+                .Groups
+                .Where(g => g.DeleteAt == null)
+                .AsEnumerable()
+                .Select(g => g with { 
+                    ImageUrl = $"{Request.Scheme}://{Request.Host}/Storage/Item/{g.ImageUrl}"
+                })
+                .ToList()
+            };
+
+            return Json(model);
+        }
 
         public IActionResult Group([FromRoute] string id)
         {

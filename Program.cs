@@ -1,4 +1,6 @@
-﻿using ASP_PV411.Data;
+﻿//Comment in vs
+
+using ASP_PV411.Data;
 using ASP_PV411.Middleware;
 using ASP_PV411.Services.FileExtensionChecker;
 using ASP_PV411.Services.FolderName;
@@ -51,6 +53,7 @@ builder.Services.AddSession(options =>
 string connectionString = builder.Configuration.GetConnectionString("LocalDb") ?? throw new FileNotFoundException("Connection String Configuration: key not found: LocalDb");
 // Для EF-контекстів є свій метод реєстрації - AddDbContext
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin()));
 
 var app = builder.Build();
 
@@ -74,6 +77,7 @@ var migrationTask = app
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors();
 app.UseAuthorization();
 app.UseSession();
 

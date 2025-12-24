@@ -1,6 +1,6 @@
 ﻿namespace ASP_PV411.Data.Entities
 {
-    public class Group
+    public record Group
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
