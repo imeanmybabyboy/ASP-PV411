@@ -1,13 +1,17 @@
 ﻿using ASP_PV411.Data;
+using ASP_PV411.Models.Rest;
 using ASP_PV411.Models.Shop;
 using ASP_PV411.Services.Random;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASP_PV411.Controllers
 {
-    public class ShopController(DataContext dataContext, IRandomService randomService) : Controller
+    public class ShopController(DataContext dataContext, IRandomService randomService, DataAccessor dataAccessor) : Controller
     {
+        private string FullImageUrl(string localUrl) => $"{Request.Scheme}://{Request.Host}/Storage/Item/{localUrl}";
+
         public IActionResult Index()
         {
             ShopIndexViewModel model = new()
@@ -17,7 +21,7 @@ namespace ASP_PV411.Controllers
 
             return View(model);
         }
-        
+
         public JsonResult ApiIndex()
         {
             ShopIndexViewModel model = new()
@@ -26,8 +30,9 @@ namespace ASP_PV411.Controllers
                 .Groups
                 .Where(g => g.DeleteAt == null)
                 .AsEnumerable()
-                .Select(g => g with { 
-                    ImageUrl = $"{Request.Scheme}://{Request.Host}/Storage/Item/{g.ImageUrl}"
+                .Select(g => g with
+                {
+                    ImageUrl = FullImageUrl(g.ImageUrl)
                 })
                 .ToList()
             };
@@ -63,14 +68,45 @@ namespace ASP_PV411.Controllers
 
             ShopGroupViewModel model = new()
             {
-                Group = dataContext
-                .Groups
-                .Include(g => g.Products)
-                .FirstOrDefault(g => g.Slug == id),
+                Group = dataAccessor.GetGroupBySlug(id),
                 YouMayLikeProducts = youMayLikeProducts,
             };
 
             return View(model);
+        }
+
+        public JsonResult ApiGroup([FromRoute] string id)
+        {
+            var group = dataAccessor.GetGroupBySlug(id);
+
+            if (group != null)
+            {
+                group = group with
+                {
+                    ImageUrl = FullImageUrl(group.ImageUrl),
+                    Products = [..group.Products.Select(p => p with
+                    {
+                        ImageUrl = p.ImageUrl == null ? null : FullImageUrl(p.ImageUrl)
+                    })],
+                };
+            }
+
+            RestResponse restResponse = new()
+            {
+                Status = group == null ? RestStatus.NotFound : RestStatus.Ok,
+                Meta = new()
+                {
+                    Service = "Крамниця",
+                    ServerTime = DateTime.Now.Ticks,
+                    Cache = 86400,
+                    DataType = group == null ? "null" : "object",
+                    Method = Request.Method,
+                    Path = Request.Path,
+                    Resouce = "Product group",
+                },
+                Data = group,
+            };
+            return Json(restResponse);
         }
 
         public IActionResult Product([FromRoute] string id)
@@ -82,7 +118,7 @@ namespace ASP_PV411.Controllers
 
             // обираємо інші товари з цієї ж категорії
             var youMayLikeProducts = dataContext.Products.Where(p => p.GroupId == Guid.Parse(currentGroupId) && p.Id != currentProduct!.Id).ToList();
-            
+
             // якщо товарів у цій категорії більше немає, обираємо товари з іншої категорії
             if (youMayLikeProducts.Count == 0)
             {
@@ -105,3 +141,21 @@ namespace ASP_PV411.Controllers
         }
     }
 }
+
+
+/*
+REST
+{
+    "status": {
+        "isOk": false,
+        "code": 401,
+        "phrase": "Unauthorized"
+    },
+    "meta": {
+        
+}
+
+}
+
+ 
+ */

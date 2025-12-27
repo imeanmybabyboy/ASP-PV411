@@ -358,7 +358,7 @@ namespace ASP_PV411.Controllers
             }
         }
 
-        public IActionResult Authenticate()
+        private Data.Entities.User _Authenticate()
         {
             // RFC 7617  https://datatracker.ietf.org/doc/html/rfc7617
             // Зворотній шлях - вилучення логіна й пароля для перевірки їх
@@ -368,8 +368,7 @@ namespace ASP_PV411.Controllers
             string authHeader = Request.Headers.Authorization.ToString();
             if (string.IsNullOrEmpty(authHeader))
             {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content("Missing Authorization header");
+                throw new Exception("Missing Authorization header");
             }
 
 
@@ -379,8 +378,7 @@ namespace ASP_PV411.Controllers
 
             if (!authHeader.StartsWith(scheme))
             {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content($"Invalid Authorization scheme: {scheme}only");
+                throw new Exception($"Invalid Authorization scheme: {scheme}only");
             }
 
 
@@ -388,8 +386,7 @@ namespace ASP_PV411.Controllers
             string basicCredentials = authHeader[scheme.Length..]; // QWxhZGRpbjpvcGVuIHNlc2FtZQ==
             if (basicCredentials.Length <= 3)
             {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content($"Invalid or empty {scheme}Credentials");
+                throw new Exception($"Invalid or empty {scheme}Credentials");
             }
 
             // декодуємо облікові дані з Base64
@@ -401,8 +398,7 @@ namespace ASP_PV411.Controllers
             }
             catch (Exception ex)
             {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content($"Invalid {scheme}Credentials format: {ex.Message}");
+                throw new Exception($"Invalid {scheme}Credentials format: {ex.Message}");
             }
 
 
@@ -410,19 +406,17 @@ namespace ASP_PV411.Controllers
             string[] parts = userPass.Split(':', 2); // 2 - макс к-сть частин, ігноруємо ":" у паролі
             if (parts.Length != 2)
             {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content($"Invalid {scheme}user-pass format: missing ':' separator");
+                throw new Exception($"Invalid {scheme}user-pass format: missing ':' separator");
             }
 
             string login = parts[0];
             string password = parts[1];
 
             // Шукаємо у базі даних користувача за логіном 
-            var user = dataContext.Users.FirstOrDefault(u => u.Login == login && u.DeleteAt == null);
+            var user = dataContext.Users.Include(u => u.Role).FirstOrDefault(u => u.Login == login && u.DeleteAt == null);
             if (user == null)
             {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content("Credentials rejected");
+                throw new Exception("Credentials rejected");
             }
 
             // Перевіряємо пароль шляхом розрахунку DK з використанням паролю, що переданий в облікових даних, та солі, що зберігається в БД у користувача
@@ -431,14 +425,38 @@ namespace ASP_PV411.Controllers
             string dk = kdfService.Dk(password, user.Salt);
             if (dk != user.Dk)
             {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Content("Credentials rejected.");
+                throw new Exception("Credentials rejected.");
             }
 
-            // якщо автентифікація пройшла успішно, то зберігаємо інформацію у сесії
-            AuthSessionMiddleware.SaveAuth(HttpContext, user);
+            return user;
+        }
 
-            return NoContent();
+        public IActionResult Authenticate()
+        {
+            try
+            {
+                // якщо автентифікація пройшла успішно, то зберігаємо інформацію у сесії
+                AuthSessionMiddleware.SaveAuth(HttpContext, _Authenticate());
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Content(ex.Message);
+            }
+        }
+
+        public JsonResult ApiAuthenticate()
+        {
+            try
+            {
+                return Json(_Authenticate());
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Json(ex.Message);
+            }
         }
     }
 }

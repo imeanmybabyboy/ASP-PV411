@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ASP_PV411.Data.Entities
 {
-    public class Product
+    public record Product
     {
         public Guid Id { get; set; }
         public Guid GroupId { get; set; }
@@ -18,6 +19,7 @@ namespace ASP_PV411.Data.Entities
         public string? Slug { get; set; }
         public DateTime? DeleteAt { get; set; }
 
+        [JsonIgnore]
         public Group Group { get; set; } = null!;
     }
 }

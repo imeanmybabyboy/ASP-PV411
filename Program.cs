@@ -40,7 +40,6 @@ builder.Services.AddFolderName();
 builder.Services.AddStorage();
 builder.Services.AddChecker();
 
-
 // сесії - як інструмент збереження даних між запитами
 builder.Services.AddDistributedMemoryCache();
 
@@ -55,7 +54,9 @@ builder.Services.AddSession(options =>
 string connectionString = builder.Configuration.GetConnectionString("LocalDb") ?? throw new FileNotFoundException("Connection String Configuration: key not found: LocalDb");
 // Для EF-контекстів є свій метод реєстрації - AddDbContext
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin()));
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader()));
+builder.Services.AddScoped<DataAccessor>();
+
 
 var app = builder.Build();
 
