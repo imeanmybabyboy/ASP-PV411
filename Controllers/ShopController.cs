@@ -24,20 +24,40 @@ namespace ASP_PV411.Controllers
 
         public JsonResult ApiIndex()
         {
-            ShopIndexViewModel model = new()
+            RestResponse restResponse = new()
             {
-                Groups = dataContext
-                .Groups
-                .Where(g => g.DeleteAt == null)
-                .AsEnumerable()
-                .Select(g => g with
+                Meta = new()
                 {
-                    ImageUrl = FullImageUrl(g.ImageUrl)
-                })
-                .ToList()
+                    Service = "Крамниця",
+                    ServerTime = DateTime.Now.Ticks,
+                    Cache = 86400,
+                    DataType = "array",
+                    Method = Request.Method,
+                    Path = Request.Path,
+                    Resouce = "Price groups",
+                },
+                Data = dataAccessor.GetSiteGroups()
+                        .Select(g => g with
+                        {
+                            ImageUrl = FullImageUrl(g.ImageUrl)
+                        }),
             };
+            return Json(restResponse);
 
-            return Json(model);
+            //ShopIndexViewModel model = new()
+            //{
+            //    Groups = dataContext
+            //    .Groups
+            //    .Where(g => g.DeleteAt == null)
+            //    .AsEnumerable()
+            //    .Select(g => g with
+            //    {
+            //        ImageUrl = FullImageUrl(g.ImageUrl)
+            //    })
+            //    .ToList()
+            //};
+
+            //return Json(model);
         }
 
         public IActionResult Group([FromRoute] string id)
@@ -91,6 +111,44 @@ namespace ASP_PV411.Controllers
                 };
             }
 
+            // Вам також може сподобатися - список товарів
+            int currentGroupProductsQuantity = dataContext.Groups.Include(g => g.Products).Where(g => g.Slug == id).Select(g => g.Products.Count).FirstOrDefault();
+            ICollection<Data.Entities.Product> youMayLikeProducts = null!;
+
+            // перевіряємо, щоб група була порожня для формування списку товарів, які можуть сподобатися
+            if (currentGroupProductsQuantity == 0)
+            {
+                // беремо Id поточної групи та звіряємо, щоб рандомна група != поточній
+                string currentGroupId = dataContext
+                        .Groups
+                        .FirstOrDefault(p => p.Slug == id || p.Id.ToString() == id)!
+                        .Id.ToString()!;
+
+                var groups = dataContext
+                    .Groups
+                    .Where(g => g.Id != Guid.Parse(currentGroupId) && g.Products.Count != 0)
+                    .ToList();
+
+                string randomGroupId = groups[randomService.RandomInt(groups.Count)].Id.ToString();
+
+                // створюємо список товарів із рандомної групи
+                youMayLikeProducts = dataContext
+                    .Products
+                    .Where(p => p.GroupId == Guid.Parse(randomGroupId))
+                    .AsEnumerable()
+                    .Select(p => p with
+                    {
+                        ImageUrl = p.ImageUrl == null ? null : FullImageUrl(p.ImageUrl)
+                    })
+                    .ToList();
+            }
+
+            ShopGroupViewModel viewModel = new()
+            {
+                Group = group,
+                YouMayLikeProducts = youMayLikeProducts
+            };
+
             RestResponse restResponse = new()
             {
                 Status = group == null ? RestStatus.NotFound : RestStatus.Ok,
@@ -104,7 +162,7 @@ namespace ASP_PV411.Controllers
                     Path = Request.Path,
                     Resouce = "Product group",
                 },
-                Data = group,
+                Data = viewModel,
             };
             return Json(restResponse);
         }

@@ -1,5 +1,6 @@
 ﻿using ASP_PV411.Data;
 using ASP_PV411.Middleware;
+using ASP_PV411.Models.Rest;
 using ASP_PV411.Models.User;
 using ASP_PV411.Services.Kdf;
 using ASP_PV411.Services.Salt;
@@ -448,8 +449,24 @@ namespace ASP_PV411.Controllers
 
         public JsonResult ApiAuthenticate()
         {
+                RestResponse restResponse = new()
+                {
+                    Meta = new()
+                    {
+                        Service = "Користувачі",
+                        ServerTime = DateTime.Now.Ticks,
+                        Cache = 86400,
+                        DataType = "array",
+                        Method = Request.Method,
+                        Path = Request.Path,
+                        Resouce = "Користувачі",
+                    },
+                };
+
             try
             {
+                restResponse.Data = _Authenticate();
+
                 return Json(_Authenticate());
             }
             catch (Exception ex)

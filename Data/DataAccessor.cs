@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASP_PV411.Data
 {
@@ -6,6 +7,14 @@ namespace ASP_PV411.Data
 
     public class DataAccessor(DataContext dataContext)
     {
+        public List<Entities.Group> GetSiteGroups()
+        {
+            return dataContext
+                .Groups
+                .Where(g => g.DeleteAt == null)
+                .ToList();
+        }
+
         public Entities.Group? GetGroupBySlug(string slug)
         {
             return dataContext
